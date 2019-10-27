@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Setup
+{% endblock %}
+{% block head %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Add a new subject!</h1>
+    <!-- <p class="lead">Your education will be a lot easier from now own!</p> -->
+</div>
+{% endblock %}
+
+{% block main %}
+<form class="needs-validation" id="f" novalidate action="/add/subject" method="post">
+    <div class="form-group mb-2">
+        <input autocomplete="off" autofocus class="form-control" name="subject" placeholder="Subject" type="text"
+            required>
+        <div class="invalid-feedback">Please enter your subject</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <select class="custom-select form-control" name="type" required>
+            <option value="Lecture">Lecture</option>
+            <option value="Section">Section</option>
+            <option value="Lab">Lab</option>
+        </select>
+        <div class="invalid-feedback">Please choose a type</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <input autocomplete="off" autofocus class="form-control" name="lecturer" placeholder="Lecturer" type="text"
+            required>
+        <div class="invalid-feedback">Please enter your lecturer's name</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <input autocomplete="off" autofocus class="form-control" name="place" placeholder="Place" type="text"
+            required>
+        <div class="invalid-feedback">Please enter the place</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <label for="start">Start time</label>
+        <input autocomplete="off" autofocus class="form-control" name="start" id="start" type="time" required>
+        <div class="invalid-feedback">Please enter start time</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <label for="end">End time</label>
+        <input autocomplete="off" autofocus class="form-control" name="end" id="end" type="time" required>
+        <div class="invalid-feedback">Please enter end time</div>
+
+    </div>
+    <div class="form-group mb-2">
+    <select class="custom-select form-control" name="day" required>
+        <option value="" disabled selected>Day</option>
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option>
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+    </select>
+    </div>
+    <button class="btn btn-primary darkmode-ignore" type="submit">Add</button>
+</form>
+
+{% endblock %}

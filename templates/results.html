@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Results
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron jumbotron-fluid text-center">
+    <div class="container">
+        <h1 class="display-4">Results</h1>
+        <p class="lead">Number of results: {{ results|length }}</p>
+    </div>
+</div>
+{% endblock %}
+{% block main %}
+{% if results %}
+
+<div class="table-responsive darkmode-ignore">
+        <table class="table table-dark table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Lecturer</th>
+                    <th scope="col">Day</th>
+                    <th scope="col">Place</th>
+                    <th scope="col">Start Time</th>
+                    <th scope="col">End Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for result in results %}
+                <tr>
+                    <td><a href="/subjects/{{ result['subject'] | replace(' ', '_') }}">{{ result["subject"] }}</a></td>
+                    <td><a href="/type/{{ result['type'] }}">{{ result["type"] }}</a></td>
+                    <td><a href="/subjects/{{ result['subject'] | replace(' ', '_') }}">{{ result["lecturer"] }}</a></td>
+                    <td><a href="/days/{{ result['day'] }}">{{ result["day"] }}</a></td>
+                                        <td><a href="/place/{{ result['place'] | replace(' ', '_') }}">{{ result["place"] }}</a></td>
+                    <td><a href="/subjects/{{ result['subject'] | replace(' ', '_') }}"><span class="time">{{ result["start_time"] }}</span></a></td>
+                    <td><a href="/subjects/{{ result['subject'] | replace(' ', '_') }}"><span class="time">{{ result["end_time"] }}</span></a></td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Sorry!</h4>
+            <p>No results found.</p>
+    </div>
+{% endif %}
+
+<script>
+    $(document).ready( function () {
+    $('table').DataTable();
+});
+</script>
+{% endblock %}

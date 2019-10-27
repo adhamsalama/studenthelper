@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+Feedback
+
+{% endblock %}
+
+{% block main %}
+
+{% if session["email"] %}
+
+<form class="needs-validation" novalidate action="/feedback" autocomplete="off" method="post">
+    <div class="form-group">
+        <select class="custom-select form-control med-form" name="type" required>
+            <option value="" disabled selected>Type</option>
+            <option value="bug">Bug</option>
+            <option value="suggestion">Suggestion</option>
+        </select>
+        <div class="invalid-feedback">Please select feedback type</div>
+    </div>
+    <div class="mb-3">
+        <textarea class="form-control med-form" placeholder="Feedback" name="feedback" required></textarea>
+        <div class="invalid-feedback">Please write your feedback</div>
+    </div>
+    <button class="btn btn-primary darkmode-ignore" type="submit">Send</button>
+</form>
+{% else %}
+    <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Sorry!</h4>
+            <p>You must add an email to submit feedback.
+            <br>
+            Click on settings then add email add try again.
+            </p>
+    </div>
+{% endif %}
+
+
+
+
+{% endblock %}

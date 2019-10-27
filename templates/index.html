@@ -1,0 +1,171 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome!</h1>
+    <p class="lead">You're on Student Helper!
+        <br>
+        Today is {{ day }}.
+        <br>
+        Number of lectures today: {{ subjects|length }}
+    </p>
+        <button type="button" class="btn btn-primary darkmode-ignore" data-toggle="modal" data-target="#add">
+            Add Subject
+        </button>
+        <!-- Modal -->
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100 text-center" id="exampleModalLabel">Add Subject</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="f" novalidate action="/add/subject" method="post">
+                    <div class="form-group mb-2">
+                        <input autocomplete="off" autofocus class="form-control" name="subject" placeholder="Subject"
+                            type="text" required>
+                        <div class="invalid-feedback">Please enter your subject</div>
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <select class="custom-select form-control" name="type" required>
+                            <option disabled selected value="">Type</option>
+                            <option value="Lecture">Lecture</option>
+                            <option value="Section">Section</option>
+                            <option value="Lab">Lab</option>
+                        </select>
+                        <div class="invalid-feedback">Please choose a type</div>
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <input autocomplete="off" autofocus class="form-control" name="lecturer" placeholder="Lecturer"
+                            type="text" required>
+                        <div class="invalid-feedback">Please enter your lecturer's name</div>
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <input autocomplete="off" autofocus class="form-control" name="place" placeholder="Place"
+                            type="text" required>
+                        <div class="invalid-feedback">Please enter the place</div>
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="start">Start time</label>
+                        <input autocomplete="off" autofocus class="form-control" name="start" id="start" type="time"
+                            required>
+                        <div class="invalid-feedback">Please enter start time</div>
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="end">End time</label>
+                        <input autocomplete="off" autofocus class="form-control" name="end" id="end" type="time"
+                            required>
+                        <div class="invalid-feedback">Please enter end time</div>
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <select class="custom-select form-control" name="day" required>
+                            <option value="" disabled selected>Day</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary ml-auto darkmode-ignore w-100 text-center" type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+{% endblock %}
+{% block main %}
+
+{% if subjects %}
+<div class="table-responsive darkmode-ignore">
+    <table class="table table-dark table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Subject</th>
+                <th scope="col">Type</th>
+                <th scope="col">Lecturer</th>
+            <!--    <th scope="col">Day</th> -->
+                <th scope="col">Place</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">End Time</th>
+                <!-- <th scope="col">Delete</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in subjects %}
+            <tr>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
+                <td><a href="/type/{{ subject['type'] }}">{{ subject["type"] }}</a></td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>
+            <!--    <td><a href="/days/{{ subject['day'] }}" class="link"><span class="day">{{ subject["day"] }}</span></a> </td> -->
+                <td><a href="/place/{{ subject['place'] | replace(' ', '_') }}">{{ subject["place"] }}</a></td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span class="time">{{ subject["start_time"] }}</a>
+                </td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span class="time">{{ subject["end_time"] }}</a></td>
+                <!-- <td>
+                    <form action="/delete/subject" class="form" method="post">
+                        <input type="hidden" name="subject" value="{{ subject['subject'] }}">
+                        <input type="hidden" name="type" value="{{ subject['type'] }}">
+                        <input type="hidden" name="lecturer" value="{{ subject['lecturer'] }}">
+                        <input type="hidden" name= "day" value="{{ subject['day'] }}">
+                        <input type="hidden" name="place" value="{{ subject['place'] }}">
+                        <input type="hidden" name="start" value="{{ subject['start_time'] }}">
+                        <input type="hidden" name="end" value="{{ subject['end_time'] }}">
+                        <button class="btn btn-primary" type="submit">Delete</button>
+                    </form>
+                </td> -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-primary" role="alert">
+  <h4 class="alert-heading">You're free!</h4>
+    <p>You don't have any lectures today.</p>
+</div>
+{% endif %}
+{% if next %}
+<a href="/days/{{ next_day }}">
+<div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">Study for tomorrow!</h4>
+    <p>You have {{ next|length }} subject(s) tomorrow.
+    <br>
+    Click to view tomorrow's lectures.
+    </p>
+</div>
+</a>
+{% else %}
+<div class="alert alert-primary" role="alert">
+        <h4 class="alert-heading">You're free tomorrow!</h4>
+        <p>You don't have any lectures tomorrow.</p>
+    </div>
+{% endif %}
+<!--<script>
+    let form = document.querySelector(".form");
+    form.onsubmit = function () {
+        return confirm("Are you sure you want to delete this subject?");
+    }
+</script>-->
+
+{% endblock %}

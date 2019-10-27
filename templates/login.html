@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+{% block head %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome To Student Helper!</h1>
+    <p class="lead">This website aims to help you be more productive.
+    <br>
+    Please in log in, if you don't have an account you can <a href="/register" style="text-decoration: underline; color: blue">register</a>.</p>
+</div>
+{% endblock %}
+{% block main %}
+    <form class="needs-validation" novalidate action="/login" method="post">
+        <div class="form-group mb-2">
+            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text" required>
+                    <div class="invalid-feedback">Please enter your username</div>
+
+        </div>
+        <div class="form-group mb-2">
+            <input class="form-control" name="password" placeholder="Password" type="password" required>
+                    <div class="invalid-feedback">Please enter password</div>
+
+        </div>
+        <button class="btn btn-primary darkmode-ignore" type="submit">Log In</button>
+    </form>
+
+{% endblock %}

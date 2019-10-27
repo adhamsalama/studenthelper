@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ info[0]["subject"] }}
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron jumbotron-fluid text-center">
+    <div class="container">
+        <h1 class="display-4">{{ info[0]["subject"] }}.</h1>
+        <h5 class="lead">presented by {{ lecturer }}</a>.
+            <br>
+            Number of days: {{ info|length }}
+        </h5>
+        <form action="/delete/entire_subject" method="post" id="delete_subject">
+            <input type="hidden" name="subject" value="{{ info[0]['subject'] }}">
+            <button class="btn btn-danger darkmode-ignore" type="submit">Delete Subject</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block main %}
+<div class="table-responsive darkmode-ignore">
+        <table class="table table-dark table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Place</th>
+                    <th scope="col">Day</th>
+                    <th scope="col">Start Time</th>
+                    <th scope="col">End Time</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for day in info %}
+                <tr>
+                    <td><a href="/type/{{ day['type'] }}">{{ day["type"] }}</a></td>
+                    <td><a href="/place/{{ day['place'] | replace(' ', '_') }}">{{ day["place"] }}</a></td>
+                    <td><a href="/days/{{ day['day'] }}">{{ day["day"] }}</a></td>
+                    <td><a href="/subjects/{{ day['subject'] | replace(' ', '_') }}"><span class="time">{{ day["start_time"] }}</span></a></td>
+                    <td><a href="/subjects/{{ day['subject'] | replace(' ', '_') }}"><span class="time">{{ day["end_time"] }}</span></a></td>
+                    <td>
+                    <form action="/delete/subject" onsubmit=" return verify();" method="post">
+                        <input type="hidden" name="subject" value="{{ day['subject'] }}">
+                        <input type="hidden" name="type" value="{{ day['type'] }}">
+                        <input type="hidden" name="lecturer" value="{{ day['lecturer'] }}">
+                        <input type="hidden" name= "day" value="{{ day['day'] }}">
+                        <input type="hidden" name="place" value="{{ day['place'] }}">
+                        <input type="hidden" name="start" value="{{ day['start_time'] }}">
+                        <input type="hidden" name="end" value="{{ day['end_time'] }}">
+                        <button class="btn btn-danger darkmode-ignore" type="submit">Delete</button>
+                    </form>
+                </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% if not dues %}
+<div class="alert alert-danger" role="alert">
+    No dues found.
+</div>
+{% else %}
+
+<div class="table-responsive darkmode-ignore">
+        <table class="table table-dark table-striped table-hover">
+            <caption>Dues</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Required</th>
+                    <th scope="col">Deadline</th>
+                    <th scope="col">Days Left</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for due in dues %}
+                <tr>
+                    <td>{{ due["required"] }}</td>
+                    <td class="deadline">{{ due["deadline"] }}</td>
+                    <td><span class="time-left"></span></td>
+                    <td>
+                        <form action="/delete/due" onsubmit=" return verify_due();" method="post">
+                            <input type="hidden" name="subject" value="{{ due['subject'] }}">
+                            <input type="hidden" name= "required" value="{{ due['required'] }}">
+                            <input type="hidden" name="deadline" value="{{ due['deadline'] }}">
+                            <button class="btn btn-danger darkmode-ignore" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endif %}
+<script>
+    let form = document.querySelector("#delete_subject");
+    form.onsubmit = function () {
+        return confirm("Are you sure you want to delete this subject?");
+    }
+    function verify(){
+        return confirm("Are you sure you want to delete this subject?");
+    }
+    function verify_due(){
+        return confirm("Are you sure you want to delete this due?");
+    }
+    let d1 = new Date(); //"now"
+    let deadlines = document.querySelectorAll(".deadline");
+    let dates = document.querySelectorAll(".time-left");
+    for (let i = 0; i < deadlines.length; i++)
+    {
+        let d2 = new Date(deadlines[i].innerHTML);
+        let month = d2.getMonth()-d1.getMonth();
+        let day = d2.getDate() - d1.getDate();
+        let left = month * 60 + day;
+        /*alert(month);
+        alert(day);
+        */
+        if (left >= 0)
+        {
+            dates[i].innerHTML = left;
+        }
+        else
+        {
+            dates[i].innerHTML = "Done";
+        }
+    }
+    </script>
+{% endblock %}

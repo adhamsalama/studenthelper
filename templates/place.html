@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Building
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron jumbotron-fluid text-center">
+    <div class="container">
+        <h1 class="display-4">{{ place }}</h1>
+        <p class="lead">Number of subjects: {{ subjects|length }}
+            <br>
+            Number of days: {{ days|length }}
+        </p>
+    </div>
+</div>
+{% endblock %}
+{% block main %}
+<div class="table-responsive">
+        <table class="table table-dark table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Day</th>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Lecturer</th>
+                    <th scope="col">Start Time</th>
+                    <th scope="col">End Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for subject in subjects %}
+                <tr>
+                    <td><a href="/day/{{ subject['day'] }}">{{ subject["day"] }}</a></td>
+                    <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
+                    <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["type"] }}</a></td>
+                    <td><a href="/authors/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>
+                    <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span class="time">{{ subject["start_time"] }}</span></a></td>
+                    <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span class="time">{{ subject["end_time"] }}</span></a></td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+<script>
+    //$(document).ready( function () {
+    //$('table').DataTable();
+//});
+</script>
+{% endblock %}

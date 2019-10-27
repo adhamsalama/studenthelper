@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Day
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron jumbotron-fluid text-center">
+    <div class="container">
+        <h1 class="display-4">{{ day }}</h1>
+        <p class="lead">Number of subjects: {{ subjects|length }}</p>
+        <form action="/delete/day" method="post" id="delete_day">
+            <input type="hidden" name="day" value="{{ day }}">
+            <button class="btn btn-danger darkmode-ignore" type="submit">Delete Day</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block main %}
+<div class="table-responsive darkmode-ignore">
+        <table class="table table-dark table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Lecturer</th>
+                    <th scope="col">Place</th>
+                    <th scope="col">Start Time</th>
+                    <th scope="col">End Time</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for subject in subjects %}
+                <tr>
+                    <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
+                    <td><a href="/type/{{ subject['type'] }}">{{ subject["type"] }}</a></td>
+                    <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>
+                    <td><a href="/place/{{ subject['place'] | replace(' ', '_') }}">{{ subject["place"] }}</a></td>
+                    <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span class="time">{{ subject["start_time"] }}</a></td>
+                    <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span class="time">{{ subject["end_time"] }}</a></td>
+                    <td>
+                        <form action="/delete/subject" onsubmit=" return verify();" method="post">
+                            <input type="hidden" name="subject" value="{{ subject['subject'] }}">
+                            <input type="hidden" name="type" value="{{ subject['type'] }}">
+                            <input type="hidden" name="lecturer" value="{{ subject['lecturer'] }}">
+                            <input type="hidden" name= "day" value="{{ subject['day'] }}">
+                            <input type="hidden" name="place" value="{{ subject['place'] }}">
+                            <input type="hidden" name="start" value="{{ subject['start_time'] }}">
+                            <input type="hidden" name="end" value="{{ subject['end_time'] }}">
+                            <button class="btn btn-primary darkmode-ignore" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+<script>
+    let form = document.querySelector("#delete_day");
+    form.onsubmit = function () {
+        return confirm("Are you sure you want to delete this day?");
+    }
+
+    function verify(){
+        return confirm("Are you sure you want to delete this subject?");
+    }
+</script>
+{% endblock %}
