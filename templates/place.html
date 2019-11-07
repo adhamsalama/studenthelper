@@ -31,7 +31,7 @@ Building
             <tbody>
             {% for subject in subjects %}
                 <tr>
-                    <td><a href="/day/{{ subject['day'] }}">{{ subject["day"] }}</a></td>
+                    <td><a href="/days/{{ subject['day'] }}">{{ subject["day"] }}</a></td>
                     <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
                     <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["type"] }}</a></td>
                     <td><a href="/authors/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>

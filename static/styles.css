@@ -67,19 +67,7 @@ footer
 
 
 @media (min-width: 600px) {
-    .carousel {
-        height: 50%;
-    }
 
-
-
-
-     .carousel-item > img {
-        height: 650px;
-    }
-     .bd-example {
-        width: 60%;
-    }
 }
 
 .carousel-caption {

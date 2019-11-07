@@ -22,7 +22,7 @@
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
 
-    <title>Student Helper</title>
+    <title>{% block title %} {% endblock %}</title>
 
 </head>
 
@@ -44,7 +44,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
 
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown active">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Subjects
@@ -52,20 +52,20 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 {% if session["subjects"] %}
                     {% for s in session["subjects"] %}
-                            <a class="dropdown-item" href="/subjects/{{ s[0] }}">{{ s[0] }}</a>
+                            <a class="dropdown-item" href="/subjects/{{ s[0]|replace(' ', '_') }}">{{ s[0] }}</a>
                     {% endfor %}
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/schedule">Schedule</a>
 
                 {% else %}
-                    <a class="dropdown-item" href="/setup">Add Subject</a>
+                    <a class="dropdown-item" href="/add/subject">Add Subject</a>
                 {% endif %}
                     </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/dues">Dues</a></li>
-                <noscript><li class="nav-item"><a class="nav-link" href="/setup">Add</a></li></noscript>
-                <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
-                <li class="nav-item dropdown">
+                <li class="nav-item active"><a class="nav-link" href="/dues">Dues</a></li>
+                <noscript><li class="nav-item active"><a class="nav-link" href="/setup">Add</a></li></noscript>
+                <li class="nav-item active"><a class="nav-link" href="/profile">Profile</a></li>
+                <li class="nav-item dropdown active">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Settings
@@ -81,7 +81,7 @@
                         <a class="dropdown-item" href="/feedback">Send Feedback</a>
                     </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/logout">Log Out</a></li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="/search" method="get">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q"
@@ -107,11 +107,9 @@
     <main class="container py-5">
         {% block main %}{% endblock %}
     </main>
-    {% if session.user_id %}
     <footer>
-        Helping students to be more productive.
+        Helping students be more productive. <a href="/about_me" style="color: blue">About me.</a>
     </footer>
-    {% endif %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script src="/static/validation.js"></script>
@@ -129,40 +127,18 @@
         for (let i = 0; i < tds.length; i++) {
             tds[i].style.verticalAlign = "middle";
         }
-        // let days_n = document.querySelectorAll(".day");
-        // let links = document.querySelectorAll(".link");
-        // let days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-        // for (let i = 0, n = days_n.length; i < n; i++) {
-        //     days_n[i].innerHTML = days[days_n[i].innerHTML];
-        //     links[i].href = "/days/" + days_n[i].innerHTML;
-        // }
         let time = document.querySelectorAll(".time");
         for (let i = 0, n = time.length; i < n; i++)
         {
-            let t = parseInt(time[i].innerHTML[0]) * 10 + parseInt(time[i].innerHTML[1]);
-            let t2 = parseInt(time[i].innerHTML[3]) * 10 + parseInt(time[i].innerHTML[4])
-            if (t2 == 0)
+            let minutes = parseInt(time[i].innerHTML[3]) * 10 + parseInt(time[i].innerHTML[4]);
+            if (minutes < 10)
             {
-                t2 = ":00";
+                minutes = "0" + minutes;
             }
-            else{
-                t2 = ":" + t2;
-            }
-            if (t > 12)
-            {
-                t2 += " PM";
-                time[i].innerHTML = t - 12 + t2;
-            }
-            else if (t == 12)
-            {
-                t2 += " PM";
-                time[i].innerHTML = t + t2;
-            }
-            else
-            {
-                t2 += " AM";
-                time[i].innerHTML = t + t2;
-            }
+            let hours = parseFloat(time[i].innerHTML);
+            let suffix = hours >= 12 ? " PM":" AM";
+            hours = ((hours + 11) % 12 + 1);
+            time[i].innerHTML = hours + ":" + minutes + suffix;
         }
 
     </script>

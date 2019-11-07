@@ -35,24 +35,28 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/")
 @login_required
 def index():
+    """Display index page"""
+
     import time
     day = time.strftime("%A")
     days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     # day = days.index(day)
-    next_day = days[days.index(day) + 1]
+    next_day = days[(days.index(day) + 1) % 7]
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
                    {"id": session["user_id"], "day": day}).fetchall()
     nxt_day = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next",
                          {"id": session["user_id"], "next": next_day}).fetchall()
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
-    return render_template("index.html", subjects=q, next=nxt_day, next_day=next_day, day=day)
+    date = time.strftime("%D")
+    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": date}).fetchall()
+    return render_template("index.html", subjects=q, next=nxt_day, next_day=next_day, day=day, dues=dues)
 
 
 @app.route("/profile")
 @login_required
 def profile():
-    """Display user profile"""
+    """Display user's profile"""
 
     # Getting number of subjects
     uni = db.execute("SELECT university FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()
@@ -78,6 +82,8 @@ def profile():
 @app.route("/schedule")
 @login_required
 def schedule():
+    """Display the user's schedule"""
+
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id ORDER BY start_time", {"id": session["user_id"]}).fetchall()
     # Sorting subjects by days
     subjects = {"Saturday": [], "Sunday": [], "Monday": [], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": []}
@@ -92,9 +98,12 @@ def schedule():
 @app.route("/subjects/<subject>")
 @login_required
 def subject(subject):
+    """Display a subject for the user"""
+
     if not subject:
         return apology(message="subject not found")
-    q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :subject",
+    subject = subject.replace("_", " ")
+    q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject ILIKE :subject",
                    {"id": session["user_id"], "subject": subject.replace("_", " ")}).fetchall()
     if not q:
         return apology("can't find subject")
@@ -103,7 +112,7 @@ def subject(subject):
             lecturer = s["lecturer"]
     else:
         lecturer = q[0]["lecturer"]
-    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject = :s",
+    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject ILIKE :s",
                       {"id": session["user_id"], "s": subject}).fetchall()
     return render_template("subject.html", info=q, lecturer=lecturer, dues=dues)
 
@@ -117,8 +126,12 @@ def subjects():
 @app.route("/delete/all_subjects", methods=["POST"])
 @login_required
 def delete():
-    db.execute("DELETE FROM subjects WHERE user_id = :id", {"id": session["user_id"]})
-    db.commit()
+    """Delete all subjects"""
+    try:
+        db.execute("DELETE FROM subjects WHERE user_id = :id", {"id": session["user_id"]})
+        db.commit()
+    except:
+        return apology("something went wrong")
     flash("Subjects deleted!")
     return redirect("/")
 
@@ -126,6 +139,8 @@ def delete():
 @app.route("/delete/entire_subject", methods=["POST"])
 @login_required
 def delete_entire_subject():
+    """Delete entire subject"""
+
     subject = request.form.get("subject")
     if not subject:
         return apology("subject doesn't exist")
@@ -141,6 +156,8 @@ def delete_entire_subject():
 @app.route("/delete/subject", methods=["POST"])
 @login_required
 def delete_subject():
+    """Delete one subject"""
+
     s = request.form.get("subject")
     t = request.form.get("type")
     l = request.form.get("lecturer")
@@ -160,12 +177,14 @@ def delete_subject():
                {"id": session["user_id"], "s": s, "t": t, "l": l, "d": d, "p": p, "st": st, "e": e})
     db.commit()
     flash(f"{t} deleted!")
-    return redirect("/")
+    return redirect("/schedule")
 
 
 @app.route("/type/<module_type>")
 @login_required
 def s_type(module_type):
+    """Display all subjects of this type"""
+
     if not module_type:
         return apology("please enter a type")
     subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND type = :type ORDER BY start_time",
@@ -184,9 +203,11 @@ def s_type(module_type):
 @app.route("/place/<place>")
 @login_required
 def place(place):
+    """Display subjects in this place"""
+
     if not place:
         return apology(message="place not found")
-    place = place.replace("_", " ")
+    place = place.replace("_", " ").title()
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND place = :place",
                    {"id": session["user_id"], "place": place}).fetchall()
     if not q:
@@ -200,8 +221,11 @@ def place(place):
 @app.route("/days/<day>")
 @login_required
 def day(day):
+    """Display subjects on a specific day"""
+
     if not day:
         return apology(message="please enter a day")
+    day = day.title()
     subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
                           {"id": session["user_id"], "day": day}).fetchall()
     if not subjects:
@@ -212,6 +236,8 @@ def day(day):
 @app.route("/delete/day", methods=["POST"])
 @login_required
 def delete_day():
+    """Delete an entire day's subjects"""
+
     day = request.form.get("day")
     if not day:
         return apology("please enter a day")
@@ -226,6 +252,8 @@ def delete_day():
 
 @app.route("/add/subject", methods=["GET", "POST"])
 def setup():
+    """Add subject"""
+
     if request.method == "GET":
         return render_template("setup.html")
     else:
@@ -241,6 +269,7 @@ def setup():
         # days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
         # day = days.index(day)
         subject = subject.rstrip().title()
+        subject_type = subject_type.capitalize()
         lecturer = lecturer.rstrip().title()
         place = place.rstrip().title()
         q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
@@ -283,6 +312,8 @@ def sfe(n):
 @app.route("/add/uni", methods=["POST"])
 @login_required
 def add_uni():
+    """Add university to user account"""
+
     uni = request.form.get("university")
     if not uni:
         return apology("please enter university")
@@ -299,39 +330,53 @@ def add_uni():
 @app.route("/dues")
 @login_required
 def dues():
+    """Display dues for user"""
+
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id ORDER BY deadline", {"id": session["user_id"]}).fetchall()
-    return render_template("dues.html", dues=dues)
+    subjects = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                     {"id": session["user_id"]}).fetchall()
+    return render_template("dues.html", dues=dues, subjects=subjects)
 
 
-@app.route("/add/due", methods=["GET", "POST"])
+@app.route("/add/due", methods=["POST"])
 @login_required
 def add_due():
-    if request.method == "GET":
-        return render_template("add_due.html")
+    """Add due"""
+
+    subject = request.form.get("subject")
+    s_type = request.form.get("type")
+    required = request.form.get("required")
+    deadline = request.form.get("deadline")
+    if not subject or not s_type or not required or not deadline:
+        return apology("something went wrong")
+    subject = subject.title()
+    subjects = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                          {"id": session["user_id"]}).fetchall()
+    print(subject)
+    print(subjects)
+    for s in subjects:
+        if subject == s[0]:
+            q = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject = :s AND type = :t AND required = :r AND deadline = :d",
+                           {"id": session["user_id"], "t": s_type, "s": subject, "r": required, "d": deadline}).fetchone()
+            if q:
+                return apology("due already exists")
+            try:
+                db.execute("INSERT INTO dues (user_id, subject, type, required, deadline) VALUES(:id, :s, :t, :r, :d)",
+                           {"id": session["user_id"], "t": s_type, "s": subject, "r": required, "d": deadline})
+                db.commit()
+            except Exception as x:
+                return apology("something went wrong with the database")
+            flash("Due added successfully!")
+            return redirect("/dues")
     else:
-        subject = request.form.get("subject")
-        required = request.form.get("required")
-        deadline = request.form.get("deadline")
-        if not subject or not required or not deadline:
-            return apology("something went wrong")
-        subject = subject.title()
-        q = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject = :s AND required = :r AND deadline = :d",
-                       {"id": session["user_id"], "s": subject, "r": required, "d": deadline}).fetchone()
-        if q:
-            return apology("due already exists")
-        try:
-            db.execute("INSERT INTO dues (user_id, subject, required, deadline) VALUES(:id, :s, :r, :d)",
-                       {"id": session["user_id"], "s": subject, "r": required, "d": deadline})
-            db.commit()
-        except:
-            return apology("something went wrong with the database")
-        flash("Due added successfully!")
-        return redirect("/dues")
+        return apology("subject doesn't exist")
 
 
 @app.route("/delete/due", methods=["POST"])
 @login_required
 def delete_due():
+    """Delete one due"""
+
     subject = request.form.get("subject")
     required = request.form.get("required")
     deadline = request.form.get("deadline")
@@ -354,6 +399,8 @@ def delete_due():
 @app.route("/delete/dues", methods=["POST"])
 @login_required
 def delete_dues():
+    """Delete all dues"""
+
     try:
         db.execute("DELETE FROM dues WHERE user_id = :id", {"id": session["user_id"]})
         db.commit()
@@ -368,17 +415,24 @@ def delete_dues():
 def search():
     """Search for user input"""
 
-    name = request.args.get("q").rstrip()
-    if not name:
+    q = request.args.get("q").rstrip()
+    if not q:
         return apology(message="please enter a name to search")
-    results = db.execute("SELECT * FROM subjects WHERE user_id = :id AND (subject ILIKE :name OR type ILIKE :name OR lecturer ILIKE :name OR place ILIKE :name OR day ILIKE :name)",
-                         {"id": session["user_id"], "name": "%" + name + "%"}).fetchall()
-    return render_template("results.html", results=results)
+    try:
+        results = db.execute("SELECT * FROM subjects WHERE user_id = :id AND (subject ILIKE :q OR type ILIKE :q OR lecturer ILIKE :q OR place ILIKE :q OR day ILIKE :q)",
+                         {"id": session["user_id"], "q": "%" + q + "%"}).fetchall()
+        dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND (subject ILIKE :q OR subject ILIKE :q OR type ILIKE :q OR required ILIKE :q)",
+                          {"id": session["user_id"], "q": "%" + q + "%"}).fetchall()
+    except:
+        return apology("something went wrong")
+    return render_template("results.html", results=results, dues=dues, q=q)
 
 
 @app.route("/settings/change_password", methods=["GET", "POST"])
 @login_required
 def change_password():
+    """Change user password"""
+
     if request.method == "GET":
         return render_template("change_password.html")
     else:
@@ -422,6 +476,8 @@ def change_password():
 @app.route("/settings/change_email", methods=["GET", "POST"])
 @login_required
 def change_email():
+    """Change user email"""
+
     if request.method == "GET":
         return render_template("change_email.html")
     else:
@@ -448,6 +504,8 @@ def change_email():
 @app.route("/settings/add_email", methods=["GET", "POST"])
 @login_required
 def add_email():
+    """Add email to user account"""
+
     if request.method == "GET":
         return render_template("add_email.html")
     else:
@@ -624,6 +682,11 @@ def check():
     return jsonify(True)
 
 
+@app.route("/about_me")
+def about_me():
+    return render_template("about_me.html")
+
+    
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):

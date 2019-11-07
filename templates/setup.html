@@ -11,15 +11,17 @@ Setup
 {% endblock %}
 
 {% block main %}
+<div class="container" style="width: 50%">
 <form class="needs-validation" id="f" novalidate action="/add/subject" method="post">
     <div class="form-group mb-2">
-        <input autocomplete="off" autofocus class="form-control" name="subject" placeholder="Subject" type="text"
+        <input style="width: 100%" autocomplete="off" autofocus class="form-control" name="subject" placeholder="Subject" type="text"
             required>
         <div class="invalid-feedback">Please enter your subject</div>
 
     </div>
     <div class="form-group mb-2">
         <select class="custom-select form-control" name="type" required>
+            <option value="" disabled selected>Type</option>
             <option value="Lecture">Lecture</option>
             <option value="Section">Section</option>
             <option value="Lab">Lab</option>
@@ -28,26 +30,26 @@ Setup
 
     </div>
     <div class="form-group mb-2">
-        <input autocomplete="off" autofocus class="form-control" name="lecturer" placeholder="Lecturer" type="text"
+        <input style="width: 100%" autocomplete="off" autofocus class="form-control" name="lecturer" placeholder="Lecturer" type="text"
             required>
         <div class="invalid-feedback">Please enter your lecturer's name</div>
 
     </div>
     <div class="form-group mb-2">
-        <input autocomplete="off" autofocus class="form-control" name="place" placeholder="Place" type="text"
+        <input style="width: 100%" autocomplete="off" autofocus class="form-control" name="place" placeholder="Place" type="text"
             required>
         <div class="invalid-feedback">Please enter the place</div>
 
     </div>
     <div class="form-group mb-2">
         <label for="start">Start time</label>
-        <input autocomplete="off" autofocus class="form-control" name="start" id="start" type="time" required>
+        <input style="width: 100%" autocomplete="off" autofocus class="form-control" name="start" id="start" type="time" required>
         <div class="invalid-feedback">Please enter start time</div>
 
     </div>
     <div class="form-group mb-2">
         <label for="end">End time</label>
-        <input autocomplete="off" autofocus class="form-control" name="end" id="end" type="time" required>
+        <input style="width: 100%" autocomplete="off" autofocus class="form-control" name="end" id="end" type="time" required>
         <div class="invalid-feedback">Please enter end time</div>
 
     </div>
@@ -65,5 +67,6 @@ Setup
     </div>
     <button class="btn btn-primary darkmode-ignore" type="submit">Add</button>
 </form>
+</div>
 
 {% endblock %}

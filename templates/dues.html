@@ -8,7 +8,7 @@
 <div class="jumbotron jumbotron-fluid text-center">
     <div class="container">
         <h1 class="display-4">Dues.</h1>
-        <h5 class="lead">Nnumber of dues: {{ dues|length }}
+        <h5 class="lead">Number of dues: {{ dues|length }}
         </h5>
                 <button type="button" class="btn btn-primary darkmode-ignore mb-2" data-toggle="modal" data-target="#add">
             Add Due
@@ -26,11 +26,25 @@
             <div class="modal-body">
                 <form class="needs-validation" id="f" novalidate action="/add/due" method="post">
                     <div class="form-group mb-2">
-                        <input autocomplete="off" autofocus class="form-control" name="subject" placeholder="Subject"
-                            type="text" required>
-                        <div class="invalid-feedback">Please enter your subject</div>
+                        <select class="custom-select form-control" name="subject" required>
+                            <option value="" disabled selected>Subject</option>
+                            {% for subject in subjects %}
+                                <option value="{{ subject[0] }}">{{ subject[0] }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">Please choose a subject</div>
                     </div>
-
+                <div class="form-group mb-2">
+                        <select class="custom-select form-control" name="type" required>
+                            <option value="" disabled selected>Type</option>
+                                <option value="Assignment">Assignment</option>
+                                <option value="Exam">Exam</option>
+                                <option value="Project">Project</option>
+                                <option value="Quiz">Quiz</option>
+                                <option value="Other">Other</option>
+                        </select>
+                        <div class="invalid-feedback">Please choose a type</div>
+                    </div>
                     <div class="form-group mb-2">
                         <label for="deadline">Deadline</label>
                         <input autocomplete="off" autofocus class="form-control" name="deadline" id="deadline" type="date"
@@ -66,23 +80,25 @@
 {% else %}
 
 <div class="table-responsive darkmode-ignore">
-        <table class="table table-dark table-striped table-hover">
-            <thead>
+    <table class="table table-dark table-striped table-hover">
+       <thead>
                 <tr>
                     <th scope="col">Subject</th>
+                    <th scope="col">Type</th>
                     <th scope="col">Required</th>
                     <th scope="col">Deadline</th>
-                    <th scope="col">Days Left</th>
+                    <th scope="col">Due</th>
                     <th scope="col">Delete</th>
                 </tr>
-            </thead>
-            <tbody>
+        </thead>
+        <tbody>
             {% for due in dues %}
                 <tr>
-                    <td>{{ due["subject"] }}</td>
-                    <td>{{ due["required"] }}</td>
-                    <td class="deadline">{{ due["deadline"] }}</td>
-                    <td><span class="time-left"></span></td>
+                    <td><a href="/subjects/{{ due['subject']|replace(' ', '_') }}">{{ due["subject"] }}</a></td>
+                    <td><a href="/subjects/{{ due['subject']|replace(' ', '_') }}">{{ due["type"] }}</a></td>
+                    <td style="word-break: break-word">{{ due["required"] }}</td>
+                    <td><a class="deadline" href="/subjects/{{ due['subject']|replace(' ', '_') }}">{{ due["deadline"] }}</a></td>
+                    <td><a href="/subjects/{{ due['subject']|replace(' ', '_') }}"><span class="time-left"></span></a></td>
                     <td>
                         <form action="/delete/due" onsubmit=" return verify();" method="post">
                             <input type="hidden" name="subject" value="{{ due['subject'] }}">
@@ -93,9 +109,9 @@
                     </td>
                 </tr>
             {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        </tbody>
+    </table>
+</div>
 
 {% endif %}
 <script>
@@ -112,19 +128,19 @@
     for (let i = 0; i < deadlines.length; i++)
     {
         let d2 = new Date(deadlines[i].innerHTML);
-        let month = d2.getMonth()-d1.getMonth();
-        let day = d2.getDate() - d1.getDate();
-        let left = month * 60 + day;
-        /*alert(month);
-        alert(day);
-        */
-        if (left >= 0)
+        let diffTime = d2 - d1;
+        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays == 0)
         {
-            dates[i].innerHTML = left;
+            dates[i].innerHTML = "Today";
+        }
+        else if (diffDays == 1)
+        {
+            dates[i].innerHTML = "Tomorrow";
         }
         else
         {
-            dates[i].innerHTML = "Done";
+            dates[i].innerHTML = diffDays;
         }
     }
 

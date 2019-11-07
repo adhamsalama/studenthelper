@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+About Me
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">About me.</h1>
+</div>
+{% endblock %}
+
+{% block main %}
+<p>
+    My name is Adham and I built this website as a final project for CS50.
+    <br>
+    This website aims to help students be more productive and remember all college stuff.
+    <br>
+    You can find me on:
+    <ul class="list-group">
+            <li class="list-group-item"><a href="https://www.facebook.com/adham.salama666" target="_blank" style="color: blue">Facebook.</a></li>
+            <li class="list-group-item"><a href="https://github.com/AdhamSalama" target="_blank" style="color: blue">Github</a></li>
+    </ul>
+</p>
+{% endblock %}
+<script>
+document.querySelector("footer").innerHTML = "Helping students be more productive.";
+</script>
+

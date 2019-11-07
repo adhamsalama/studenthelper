@@ -8,15 +8,16 @@ Results
 <div class="jumbotron jumbotron-fluid text-center">
     <div class="container">
         <h1 class="display-4">Results</h1>
-        <p class="lead">Number of results: {{ results|length }}</p>
+        <p class="lead">Number of results for "{{ q }}": {{ results|length + dues|length }}</p>
     </div>
 </div>
 {% endblock %}
 {% block main %}
 {% if results %}
 
-<div class="table-responsive darkmode-ignore">
+<div class="table-responsive darkmode-ignore mb-3">
         <table class="table table-dark table-striped table-hover">
+            <caption>Subjects</caption>
             <thead>
                 <tr>
                     <th scope="col">Subject</th>
@@ -46,14 +47,68 @@ Results
     </div>
 {% else %}
     <div class="alert alert-danger" role="alert">
-            <h4 class="alert-heading">Sorry!</h4>
-            <p>No results found.</p>
+            <h4 class="alert-heading">No subjects found!</h4>
     </div>
 {% endif %}
+{% if not dues %}
+<div class="alert alert-danger" role="alert">
+    No dues found.
+</div>
+{% else %}
+
+<div class="table-responsive darkmode-ignore">
+    <table class="table table-dark table-striped table-hover">
+        <caption>Dues</caption>
+       <thead>
+                <tr>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Required</th>
+                    <th scope="col">Deadline</th>
+                    <th scope="col">Due</th>
+                </tr>
+        </thead>
+        <tbody>
+            {% for due in dues %}
+                <tr>
+                    <td><a href="/subjects/{{ due['subject'] }}">{{ due["subject"] }}</a></td>
+                    <td><a href="/subjects/{{ due['subject'] }}">{{ due["type"] }}</a></td>
+                    <td style="word-break: break-word">{{ due["required"] }}</td>
+                    <td><a class="deadline" href="/subjects/{{ due['subject'] }}">{{ due["deadline"] }}</a></td>
+                    <td><a href="/subjects/{{ due['subject'] }}"><span class="time-left"></span></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endif %}
+
 
 <script>
     $(document).ready( function () {
     $('table').DataTable();
 });
+let d1 = new Date(); //"now"
+    let deadlines = document.querySelectorAll(".deadline");
+    let dates = document.querySelectorAll(".time-left");
+    for (let i = 0; i < deadlines.length; i++)
+    {
+        let d2 = new Date(deadlines[i].innerHTML);
+        let diffTime = d2 - d1;
+        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays == 0)
+        {
+            dates[i].innerHTML = "Today";
+        }
+        else if (diffDays == 1)
+        {
+            dates[i].innerHTML = "Tomorrow";
+        }
+        else
+        {
+            dates[i].innerHTML = diffDays;
+        }
+    }
 </script>
 {% endblock %}
