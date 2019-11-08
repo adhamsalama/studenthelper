@@ -495,8 +495,8 @@ def change_email():
                        {"new_email": new_email, "id": session["user_id"]})
             db.commit()
             session["email"] = new_email
-            #message="Success!\n Your email was successfully changed!"
-            #send_email(new_email, session["username"], message)
+            message="Success!\n Your email was successfully changed!"
+            send_email(new_email, session["username"], message)
             flash("Email updated!")
             return redirect("/profile")
 
@@ -518,8 +518,8 @@ def add_email():
         db.execute("UPDATE users SET email = :new_email WHERE id = :id",
                    {"new_email": email, "id": session["user_id"]})
         db.commit()
-        #message="Success!\n Your email was successfully added to your account!"
-        #send_email(email, session["username"], message)
+        message="Success!\n Your email was successfully added to your account!"
+        send_email(email, session["username"], message)
         session["email"] = email
         flash("Email added!")
         return redirect("/profile")
@@ -650,7 +650,7 @@ def register():
                    {"username": username, "hash_pw": hash_pw, "email": email, "time": time, "university": university})
         db.commit()
         message = "Congratulations!\n You're now registered on Student Helper!"
-        #send_email(email, username, message)
+        send_email(email, username, message)
     except:
         return apology("something went wrong with the database.")
     rows = db.execute("SELECT id, username, email FROM users WHERE username = :username", {"username": username}).fetchone()
