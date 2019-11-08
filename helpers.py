@@ -37,28 +37,6 @@ def login_required(f):
     return decorated_function
 
 
-def lookup(isbn):
-    """Look up book for reviews."""
-
-    # Contact API
-    try:
-        #api_key = os.environ.get("API_KEY")
-        response = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "WHj59OKYTc5wetwygm5g", "isbns": isbn})
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
-
-    # Parse response
-    try:
-        book = response.json()
-        return {
-            "ratings_count" : book["books"][0]["work_ratings_count"],
-            "average_rating" : book["books"][0]["average_rating"],
-            # "isbn": book["books"][0]["isbn"]
-        }
-    except (KeyError, TypeError, ValueError):
-        return None
-
 def send_email(email, name, message):
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()

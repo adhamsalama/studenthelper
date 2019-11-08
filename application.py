@@ -495,8 +495,12 @@ def change_email():
                        {"new_email": new_email, "id": session["user_id"]})
             db.commit()
             session["email"] = new_email
-            message="Success!\n Your email was successfully changed!"
-            send_email(new_email, session["username"], message)
+            
+            try:
+                send_email(new_email, session["username"], message)
+                message="Success!\n Your email was successfully changed!"
+            except Exception as x:
+                print()
             flash("Email updated!")
             return redirect("/profile")
 
@@ -649,10 +653,13 @@ def register():
         db.execute("INSERT INTO users(username, hash, email, time, university) VALUES(:username, :hash_pw, :email, :time, :university)",
                    {"username": username, "hash_pw": hash_pw, "email": email, "time": time, "university": university})
         db.commit()
-        message = "Congratulations!\n You're now registered on Student Helper!"
-        send_email(email, username, message)
     except:
         return apology("something went wrong with the database.")
+    try:
+        message = "Congratulations!\n You're now registered on Student Helper!"
+        send_email(email, username, message)
+    except Exception as x:
+        print(x)
     rows = db.execute("SELECT id, username, email FROM users WHERE username = :username", {"username": username}).fetchone()
     session["user_id"] = rows["id"]
     session["username"] = rows["username"]
