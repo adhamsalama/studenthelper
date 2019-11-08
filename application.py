@@ -285,7 +285,7 @@ def setup():
         except:
             return apology("something went wrong with the database")
         flash("Subject added!")
-        return redirect(f"/subjects/{subject}")
+        return redirect("/")
 
 
 @app.route("/ece/section/<n>", methods=["GET", "POST"])
