@@ -62,8 +62,8 @@ def lookup(isbn):
 def send_email(email, name, message):
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
-    server.login("the.student.helper@gmail.com", "thestudenthelper")
-    server.sendmail("the.student.helper@gmail.com", email, f"To: {email}\nSubject: Registeration for Student Helper\nHello {name},\n {message}")
+    server.login("student.helper.11@gmail.com", "thestudenthelper")
+    server.sendmail("student.helper.11@gmail.com", email, f"To: {email}\nSubject: Registeration for Student Helper\nHello {name},\n {message}")
 
 def get_time():
     """Get time"""
