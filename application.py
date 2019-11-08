@@ -4,7 +4,7 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookup, get_time, send_email
+from helpers import apology, login_required, get_time, send_email
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
