@@ -165,7 +165,6 @@ def delete_subject():
     p = request.form.get("place")
     st = request.form.get("start")
     e = request.form.get("end")
-    print(s, t, l, d, p, st, e)
     if not s or not t or not l or not d or not p or not st or not e:
         return apology("something unsual happened")
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND day = :d AND place = :p AND start_time = :st AND end_time = :e",
@@ -352,8 +351,6 @@ def add_due():
     subject = subject.title()
     subjects = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                           {"id": session["user_id"]}).fetchall()
-    print(subject)
-    print(subjects)
     for s in subjects:
         if subject == s[0]:
             q = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject = :s AND type = :t AND required = :r AND deadline = :d",
@@ -500,7 +497,7 @@ def change_email():
                 send_email(new_email, session["username"], message)
                 message="Success!\n Your email was successfully changed!"
             except Exception as x:
-                print()
+                print(x)
             flash("Email updated!")
             return redirect("/profile")
 
@@ -616,7 +613,7 @@ def register():
         if not username or not password or not confirmation or password != confirmation:
             return apology("please fill the form correctly to register.")
     # Checking for username
-    c = db.execute("SELECT username FROM users WHERE username = :username", {"username": username}).fetchall()
+    c = db.execute("SELECT username FROM users WHERE username ILIKE :username", {"username": username}).fetchall()
     if c:
         return apology("username already taken")
 
@@ -635,8 +632,8 @@ def register():
     for c in username:
         if not c.isalpha() and not c.isdigit() and c != "_":
             return apology(message="Please enter a valid username.")
-    if len(username) < 1:
-        return apology(message="please enter a username with more than 1 character.")
+    if len(username) < 3:
+        return apology("please enter a username with 3 or more characters")
     hash_pw = generate_password_hash(password)
     time = get_time()
     try:
