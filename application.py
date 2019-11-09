@@ -494,8 +494,8 @@ def change_email():
             session["email"] = new_email
             
             try:
-                send_email(new_email, session["username"], message)
                 message="Success!\n Your email was successfully changed!"
+                send_email(new_email, session["username"], message)
             except Exception as x:
                 print(x)
             flash("Email updated!")
@@ -516,11 +516,17 @@ def add_email():
         q = db.execute("SELECT email FROM users WHERE email = :email", {"email": email}).fetchone()
         if q:
             return apology(message="this email is already taken")
-        db.execute("UPDATE users SET email = :new_email WHERE id = :id",
+        try:
+            db.execute("UPDATE users SET email = :new_email WHERE id = :id",
                    {"new_email": email, "id": session["user_id"]})
-        db.commit()
-        message="Success!\n Your email was successfully added to your account!"
-        send_email(email, session["username"], message)
+            db.commit()
+        except:
+            return apology("something went wrong")
+        try:
+            message="Success!\n Your email was successfully added to your account!"
+            send_email(email, session["username"], message)
+        except Exception as x:
+            print(x)
         session["email"] = email
         flash("Email added!")
         return redirect("/profile")
