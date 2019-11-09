@@ -492,10 +492,8 @@ def change_email():
                        {"new_email": new_email, "id": session["user_id"]})
             db.commit()
             session["email"] = new_email
-            
             try:
-                message="Success!\n Your email was successfully changed!"
-                send_email(new_email, session["username"], message)
+                send_email(email, session["username"], "Changing email", "Your email was successfully changed!")
             except Exception as x:
                 print(x)
             flash("Email updated!")
@@ -523,8 +521,7 @@ def add_email():
         except:
             return apology("something went wrong")
         try:
-            message="Success!\n Your email was successfully added to your account!"
-            send_email(email, session["username"], message)
+            send_email(email, session["username"], "Adding email", "Your email was successfully added to your account!")
         except Exception as x:
             print(x)
         session["email"] = email
@@ -543,7 +540,7 @@ def feedback():
         feedback_type = request.form.get("type")
         feedback = request.form.get("feedback")
         if not feedback_type or not feedback:
-            return apology(message="please fill the form")
+            return apology("please fill the form")
         try:
             db.execute("INSERT INTO user_feedback (id, feedback, type) VALUES(:id, :feedback, :type)",
                        {"id": session["user_id"], "feedback": feedback, "type": feedback_type})
@@ -658,11 +655,11 @@ def register():
         db.commit()
     except:
         return apology("something went wrong with the database.")
-    try:
-        message = "Congratulations!\n You're now registered on Student Helper!"
-        send_email(email, username, message)
-    except Exception as x:
-        print(x)
+    if email:
+        try:
+            send_email(email, username, "Registeration for Student Helper", "Congratulations!\n You're now registered on Student Helper!")
+        except Exception as x:
+            print(x)
     rows = db.execute("SELECT id, username, email FROM users WHERE username = :username", {"username": username}).fetchone()
     session["user_id"] = rows["id"]
     session["username"] = rows["username"]
