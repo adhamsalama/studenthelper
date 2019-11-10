@@ -46,7 +46,7 @@ def get_time():
     """Get time"""
     return str(date.today())
 
-    def quote_of_the_day():
+def quote_of_the_day():
     """ Get motivational quote of the day """
     try:
         response = requests.get("http://quotes.rest/qod.json?category=inspire")
