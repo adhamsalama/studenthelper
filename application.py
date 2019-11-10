@@ -6,6 +6,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, get_time, send_email, quote_of_the_day
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from cachetools import TTLCache
+import time
 
 app = Flask(__name__)
 
@@ -31,15 +33,19 @@ engine = create_engine(
 db = scoped_session(sessionmaker(bind=engine))
 
 
-quote = quote_of_the_day()
+cache = TTLCache(maxsize=10, ttl=86400)
+cache["quote"] = quote_of_the_day()
 
 
 @app.route("/")
 @login_required
 def index():
     """Display index page"""
-
-    import time
+    try:
+        quote = cahce["quote"]
+    except:
+        cache["quote"] = quote_of_the_day()
+        quote = cache["quote"]
     day = time.strftime("%A")
     days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     # day = days.index(day)
