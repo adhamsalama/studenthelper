@@ -2,7 +2,6 @@ import os
 import requests
 import urllib.parse
 import smtplib
-
 from datetime import date
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -46,3 +45,19 @@ def send_email(email, name, subject, message):
 def get_time():
     """Get time"""
     return str(date.today())
+
+    def quote_of_the_day():
+    """ Get motivational quote of the day """
+    try:
+        response = requests.get("http://quotes.rest/qod.json?category=inspire")
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+    try:
+        response = response.json()
+        return {
+            "quote": response["contents"]["quotes"][0]["quote"],
+            "author": response["contents"]["quotes"][0]["author"],
+        }
+    except (KeyError, TypeError, ValueError):
+        return None

@@ -194,6 +194,17 @@ Home
         <h4 class="alert-heading">You don't have any subjects tomorrow!</h4>
     </div>
 {% endif %}
+{% if quote %}
+<div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Quote of the day.</h4>
+    <p>
+        {{ quote["quote"] }}
+        <br>
+        - {{ quote["author"] }}.
+    </p>
+</div>
+ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://theysaidso.com/branding/theysaidso.png" height="20" width="20" alt="theysaidso.com"/><a href="https://theysaidso.com" title="Powered by quotes from theysaidso.com" style="color: #9fcc25; margin-left: 4px; vertical-align: middle;">theysaidso.com</a></span>
+{% endif %}
 <script>
 
     let d1 = new Date(); //"now"

@@ -3,8 +3,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-
-from helpers import apology, login_required, get_time, send_email
+from helpers import apology, login_required, get_time, send_email, quote_of_the_day
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -32,6 +31,9 @@ engine = create_engine(
 db = scoped_session(sessionmaker(bind=engine))
 
 
+quote = quote_of_the_day()
+
+
 @app.route("/")
 @login_required
 def index():
@@ -50,7 +52,7 @@ def index():
                                      {"id": session["user_id"]}).fetchall()
     date = time.strftime("%D")
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": date}).fetchall()
-    return render_template("index.html", subjects=q, next=nxt_day, next_day=next_day, day=day, dues=dues)
+    return render_template("index.html", subjects=q, next=nxt_day, next_day=next_day, day=day, dues=dues, quote=quote)
 
 
 @app.route("/profile")
