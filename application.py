@@ -683,7 +683,7 @@ def check():
     email = request.args.get("email")
     username = request.args.get("username")
     email = request.args.get("email")
-    verify_username = db.execute("SELECT username FROM users WHERE username = :username", {"username": username}).fetchone()
+    verify_username = db.execute("SELECT username FROM users WHERE username ILIKE :username", {"username": username}).fetchone()
     if email:
         verify_email = db.execute("SELECT email FROM users WHERE email = :email", {"email": email}).fetchone()
         if verify_email and verify_username:
