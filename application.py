@@ -42,7 +42,7 @@ cache["quote"] = quote_of_the_day()
 def index():
     """Display index page"""
     try:
-        quote = cahce["quote"]
+        quote = cache["quote"]
     except:
         cache["quote"] = quote_of_the_day()
         quote = cache["quote"]
