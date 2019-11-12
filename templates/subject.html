@@ -202,10 +202,26 @@
         {
             dates[i].innerHTML = "Tomorrow";
         }
+        else if (diffDays == -1)
+        {
+            dates[i].innerHTML = "Yesterday";
+        }
+        else if (diffDays % 7 == 0)
+        {
+            if (diffDays == 7)
+            {
+                dates[i].innerHTML = "1 week";
+            }
+            else
+            {
+                dates[i].innerHTML = diffDays / 7 + " weeks"
+            }
+        }
         else
         {
-            dates[i].innerHTML = diffDays;
+            dates[i].innerHTML = diffDays + " days";
         }
     }
+
     </script>
 {% endblock %}

@@ -271,8 +271,10 @@ def setup():
         start = request.form.get("start")
         end = request.form.get("end")
         day = request.form.get("day")
-        if not subject or not type or not lecturer or not place or not start or not end or not day:
+        if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
             return apology(message="please fill the form")
+        if end < start:
+            return apology("end time is before start time")
         # days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
         # day = days.index(day)
         subject = subject.rstrip().title()
@@ -282,7 +284,7 @@ def setup():
         q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
                        {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
         if q:
-            return apology(message=f"{subject_type} already exists")
+            return apology(f"{subject_type} already exists")
         try:
             db.execute("INSERT INTO subjects (user_id, subject, type, lecturer, place, start_time, end_time, day) VALUES(:id, :subject, :type, :lecturer, :place, :start, :end, :day)",
                        {"id": session["user_id"], "subject": subject, "type": subject_type, "lecturer": lecturer, "place": place, "start": start, "end": end, "day": day})
