@@ -9,15 +9,15 @@
     <div class="container">
         <h1 class="display-4">{{ session["username"] }}.</h1>
         <p class="lead">Email:
-            {% if email %}
-                {{ email }}
+            {% if session["email"] %}
+                {{ session["email"] }}
             {% else %}
                 <a href="/settings/add_email" class="btn btn-primary darkmode-ignore">Add Email</a>
             {% endif %}
             <br>
             University:
-            {% if uni[0] %}
-                {{ uni[0] }}
+            {% if session["uni"] %}
+                {{ session["uni"] }}
             {% else %}
                 <form action="/add/uni" method="post">
                     <div class="form-group">

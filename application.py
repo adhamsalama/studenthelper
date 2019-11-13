@@ -67,15 +67,14 @@ def profile():
     """Display user's profile"""
 
     # Getting number of subjects
-    uni = db.execute("SELECT university FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()
     subjects = db.execute("SELECT COUNT(DISTINCT subject) FROM subjects WHERE user_id = :id",
                           {"id": session["user_id"]}).fetchone()[0]
-    lectures = db.execute("SELECT COUNT(*) FROM subjects WHERE user_id = :id AND type = 'Lecture'",
-                          {"id": session["user_id"]}).fetchone()[0]
-    sections = db.execute("SELECT COUNT(*) FROM subjects WHERE user_id = :id AND type = 'Section'",
-                          {"id": session["user_id"]}).fetchone()[0]
-    labs = db.execute("SELECT COUNT(*) FROM subjects WHERE user_id = :id AND type = 'Lab'",
-                      {"id": session["user_id"]}).fetchone()[0]
+    subjects_type_count = db.execute("SELECT DISTINCT type, COUNT(*) FROM subjects WHERE user_id = :id GROUP BY type ORDER BY type",
+                          {"id": session["user_id"]}).fetchall()
+    labs = subjects_type_count[0]["count"]
+    lectures = subjects_type_count[1]["count"]
+    sections = subjects_type_count[2]["count"]
+    total = labs + sections + lectures
     days = db.execute("SELECT DISTINCT day, COUNT(day) FROM subjects WHERE user_id = :id GROUP BY day",
                       {"id": session["user_id"]}).fetchall()
     days_off = 7 - int(len(days))
@@ -84,7 +83,8 @@ def profile():
     for x in days:
         d[x["day"]] = x["count"]
     time = db.execute("SELECT time FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()["time"]
-    return render_template("profile.html", subjects=subjects, lectures=lectures, sections=sections, labs=labs, days=d, days_off=days_off, email=session["email"], time=time, uni=uni)
+    return render_template("profile.html", subjects=subjects, lectures=lectures, sections=sections, labs=labs, total=total,
+                           days=d, days_off=days_off, time=time)
 
 
 @app.route("/schedule")
@@ -330,6 +330,7 @@ def add_uni():
     try:
         db.execute("UPDATE users SET university = :uni WHERE id= :id", {"id": session["user_id"], "uni": uni})
         db.commit()
+        session["uni"] = uni
     except:
         return apology("something went wrong")
     flash("University added!")
@@ -591,6 +592,7 @@ def login():
         session["user_id"] = rows["id"]
         session["username"] = rows["username"]
         session["email"] = rows["email"]
+        session["uni"] = rows["university"]
 
         # Redirect user to home page
         return redirect("/")
