@@ -226,10 +226,18 @@ def place(place):
                    {"id": session["user_id"], "place": place}).fetchall()
     if not q:
         return apology("place not found")
-    days = set()
+        # Sorting days
+    d = {"Saturday": [], "Sunday": [], "Monday": [], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": []}
     for s in q:
-        days.add(s["day"])
-    return render_template("place.html", place=place, subjects=q, days=days)
+        d[s["day"]].append(s)
+    counter = 0
+    for day in d:
+        if len(d[day]):
+            counter += 1
+    # days = set()
+    # for s in q:
+    #     days.add(s["day"])
+    return render_template("place.html", place=place, subjects=d, counter=counter)
 
 
 @app.route("/days/<day>")
