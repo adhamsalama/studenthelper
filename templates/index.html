@@ -10,7 +10,7 @@ Home
     <p class="lead">
         Today is {{ day }}.
         <br>
-        Number of subjects today: {{ subjects|length }}
+        Number of periods today: {{ subjects|length }}
         <br>
         Number of dues today: {{ dues|length }}
     </p>
@@ -71,17 +71,47 @@ Home
                             <div class="invalid-feedback">Please enter end time</div>
 
                         </div>
-                        <div class="form-group mb-2">
-                            <select class="custom-select form-control" name="day" required>
-                                <option value="" disabled selected>Day</option>
-                                <option value="Saturday">Saturday</option>
-                                <option value="Sunday">Sunday</option>
-                                <option value="Monday">Monday</option>
-                                <option value="Tuesday">Tuesday</option>
-                                <option value="Wednesday">Wednesday</option>
-                                <option value="Thursday">Thursday</option>
-                                <option value="Friday">Friday</option>
-                            </select>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Saturday" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                Saturday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Sunday" id="defaultCheck2">
+                            <label class="form-check-label" for="defaultCheck2">
+                                Sunday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Monday" id="defaultCheck3">
+                            <label class="form-check-label" for="defaultCheck3">
+                                Monday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Tuesday" id="defaultCheck4">
+                            <label class="form-check-label" for="defaultCheck4">
+                                Tuesday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Wednesday" id="defaultCheck5">
+                            <label class="form-check-label" for="defaultCheck5">
+                                Wednesday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Thursday" id="defaultCheck6">
+                            <label class="form-check-label" for="defaultCheck6">
+                                Thursday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Friday" id="defaultCheck7">
+                            <label class="form-check-label" for="defaultCheck7">
+                                Friday
+                            </label>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -202,6 +232,38 @@ Home
     <h4 class="alert-heading">You don't have any subjects tomorrow!</h4>
 </div>
 {% endif %}
+{% if not next_day_dues %}
+<div class="alert alert-primary" role="alert">
+    Woohoo! No dues for tomorrow!
+</div>
+{% else %}
+
+<div class="table-responsive darkmode-ignore">
+    <table class="table table-dark table-striped table-hover">
+        <caption>Tomorrow's Dues</caption>
+        <thead>
+            <tr>
+                <th scope="col">Subject</th>
+                <th scope="col">Type</th>
+                <th scope="col">Required</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">Due</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for due in next_day_dues %}
+            <tr>
+                <td><a href="/subjects/{{ due['subject'] }}">{{ due["subject"] }}</a></td>
+                <td><a href="/subjects/{{ due['subject'] }}">{{ due["type"] }}</a></td>
+                <td style="word-break: break-word">{{ due["required"] }}</td>
+                <td><a class="deadline" href="/subjects/{{ due['subject'] }}">{{ due["deadline"] }}</a></td>
+                <td><a href="/subjects/{{ due['subject'] }}"><span class="time-left"></span></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 {% if quote %}
 <div class="card text-center" id="header">
         <div class="card-header">
@@ -238,6 +300,30 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
         }
         else {
             dates[i].innerHTML = diffDays;
+        }
+    }
+    let checkbox = document.querySelectorAll(".form-check-input");
+    let n = checkbox.length;
+    document.querySelector("#f").onsubmit = function() {
+        let start = document.querySelector("#start");
+        let end = document.querySelector("#end");
+        if (end.value <= start.value)
+        {
+            alert("End time should be after start time.");
+            return false;
+        }
+        let state = 0;
+        for(let i = 0; i < n; i++)
+        {
+            if(checkbox[i].checked)
+            {
+                state++;
+            }
+        }
+        if(state == 0)
+        {
+            alert("Please choose at least one day.");
+            return false;
         }
     }
 

@@ -43,19 +43,25 @@
     Number of days off: <span class="badge badge-light">{{ days_off }}</span>
 </div>
 <div class="alert alert-primary" role="alert">
-    Number of Subjects (DISTINCT): <span class="badge badge-light">{{ subjects }}</span>
+    Number of Subjects: <span class="badge badge-light">{{ subjects }}</span>
 </div>
+<a href="/type/Lecture">
 <div class="alert alert-primary" role="alert">
     Number of Lectures: <span class="badge badge-light">{{ lectures }}</span>
 </div>
+</a>
+<a href="/type/Section">
 <div class="alert alert-primary" role="alert">
     Number of Sections: <span class="badge badge-light">{{ sections }}</span>
 </div>
+</a>
+<a href="/type/Lab">
 <div class="alert alert-primary" role="alert">
     Number of Labs: <span class="badge badge-light">{{ labs }}</span>
 </div>
+</a>
 <div class="alert alert-primary" role="alert">
-    Total: <span class="badge badge-light">{{ lectures + sections + labs }}</span>
+    Total number of periods: <span class="badge badge-light">{{ total }}</span>
 </div>
 <ul class="list-group">
     {% for day, count in days.items() %}

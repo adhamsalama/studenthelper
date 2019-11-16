@@ -16,79 +16,109 @@
             Add Subject
         </button>
         <!-- Modal -->
-<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title w-100 text-center" id="exampleModalLabel">Add Subject</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="needs-validation" id="f" novalidate action="/add/subject" method="post">
-                    <div class="form-group mb-2">
-                        <input autocomplete="off" autofocus class="form-control" name="subject" placeholder="Subject"
-                            type="text" required>
-                        <div class="invalid-feedback">Please enter your subject</div>
-
+        <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title w-100 text-center" id="exampleModalLabel">Add Subject</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="form-group mb-2">
-                        <select class="custom-select form-control" name="type" required>
-                            <option disabled selected value="">Type</option>
-                            <option value="Lecture">Lecture</option>
-                            <option value="Section">Section</option>
-                            <option value="Lab">Lab</option>
-                        </select>
-                        <div class="invalid-feedback">Please choose a type</div>
-
+                    <div class="modal-body">
+                        <form class="needs-validation" id="f" novalidate action="/add/subject" method="post">
+                            <div class="form-group mb-2">
+                                <input autocomplete="off" autofocus class="form-control" name="subject"
+                                    placeholder="Subject" type="text" required>
+                                <div class="invalid-feedback">Please enter your subject</div>
+    
+                            </div>
+                            <div class="form-group mb-2">
+                                <select class="custom-select form-control" name="type" required>
+                                    <option disabled selected value="">Type</option>
+                                    <option value="Lecture">Lecture</option>
+                                    <option value="Section">Section</option>
+                                    <option value="Lab">Lab</option>
+                                </select>
+                                <div class="invalid-feedback">Please choose a type</div>
+    
+                            </div>
+                            <div class="form-group mb-2">
+                                <input autocomplete="off" autofocus class="form-control" name="lecturer"
+                                    placeholder="Lecturer" type="text" required>
+                                <div class="invalid-feedback">Please enter your lecturer's name</div>
+    
+                            </div>
+                            <div class="form-group mb-2">
+                                <input autocomplete="off" autofocus class="form-control" name="place" placeholder="Place"
+                                    type="text" required>
+                                <div class="invalid-feedback">Please enter the place</div>
+    
+                            </div>
+                            <div class="form-group mb-2">
+                                <label for="start">Start time</label>
+                                <input autocomplete="off" autofocus class="form-control" name="start" id="start" type="time"
+                                    required>
+                                <div class="invalid-feedback">Please enter start time</div>
+    
+                            </div>
+                            <div class="form-group mb-2">
+                                <label for="end">End time</label>
+                                <input autocomplete="off" autofocus class="form-control" name="end" id="end" type="time"
+                                    required>
+                                <div class="invalid-feedback">Please enter end time</div>
+    
+                            </div>
+                            <div class="form-check left-checkbox">
+                                <input class="form-check-input" name="day" type="checkbox" value="Saturday" id="defaultCheck1">
+                                <label class="form-check-label" for="defaultCheck1">
+                                    Saturday
+                                </label>
+                            </div>
+                            <div class="form-check left-checkbox">
+                                <input class="form-check-input" name="day" type="checkbox" value="Sunday" id="defaultCheck2">
+                                <label class="form-check-label" for="defaultCheck2">
+                                    Sunday
+                                </label>
+                            </div>
+                            <div class="form-check left-checkbox">
+                                <input class="form-check-input" name="day" type="checkbox" value="Monday" id="defaultCheck3">
+                                <label class="form-check-label" for="defaultCheck3">
+                                    Monday
+                                </label>
+                            </div>
+                            <div class="form-check left-checkbox">
+                                <input class="form-check-input" name="day" type="checkbox" value="Tuesday" id="defaultCheck4">
+                                <label class="form-check-label" for="defaultCheck4">
+                                    Tuesday
+                                </label>
+                            </div>
+                            <div class="form-check left-checkbox">
+                                <input class="form-check-input" name="day" type="checkbox" value="Wednesday" id="defaultCheck5">
+                                <label class="form-check-label" for="defaultCheck5">
+                                    Wednesday
+                                </label>
+                            </div>
+                            <div class="form-check left-checkbox">
+                                <input class="form-check-input" name="day" type="checkbox" value="Thursday" id="defaultCheck6">
+                                <label class="form-check-label" for="defaultCheck6">
+                                    Thursday
+                                </label>
+                            </div>
+                            <div class="form-check left-checkbox">
+                                <input class="form-check-input" name="day" type="checkbox" value="Friday" id="defaultCheck7">
+                                <label class="form-check-label" for="defaultCheck7">
+                                    Friday
+                                </label>
+                            </div>
                     </div>
-                    <div class="form-group mb-2">
-                        <input autocomplete="off" autofocus class="form-control" name="lecturer" placeholder="Lecturer"
-                            type="text" required>
-                        <div class="invalid-feedback">Please enter your lecturer's name</div>
-
+                    <div class="modal-footer">
+                        <button class="btn btn-primary ml-auto darkmode-ignore w-100 text-center" type="submit">Add</button>
+                        </form>
                     </div>
-                    <div class="form-group mb-2">
-                        <input autocomplete="off" autofocus class="form-control" name="place" placeholder="Place"
-                            type="text" required>
-                        <div class="invalid-feedback">Please enter the place</div>
-
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="start">Start time</label>
-                        <input autocomplete="off" autofocus class="form-control" name="start" id="start" type="time"
-                            required>
-                        <div class="invalid-feedback">Please enter start time</div>
-
-                    </div>
-                    <div class="form-group mb-2">
-                        <label for="end">End time</label>
-                        <input autocomplete="off" autofocus class="form-control" name="end" id="end" type="time"
-                            required>
-                        <div class="invalid-feedback">Please enter end time</div>
-
-                    </div>
-                    <div class="form-group mb-2">
-                        <select class="custom-select form-control" name="day" required>
-                            <option value="" disabled selected>Day</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                        </select>
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary ml-auto darkmode-ignore w-100 text-center" type="submit">Add</button>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-</div>
         <form action="/delete/entire_subject" method="post" id="delete_subject">
             <input type="hidden" name="subject" value="{{ info[0]['subject'] }}">
             <button class="btn btn-danger darkmode-ignore" type="submit">Delete Subject</button>
@@ -220,6 +250,30 @@
         else
         {
             dates[i].innerHTML = diffDays + " days";
+        }
+    }
+    let checkbox = document.querySelectorAll(".form-check-input");
+    let n = checkbox.length;
+    document.querySelector("#f").onsubmit = function() {
+        let start = document.querySelector("#start");
+        let end = document.querySelector("#end");
+        if (end.value <= start.value)
+        {
+            alert("End time should be after start time.");
+            return false;
+        }
+        let state = 0;
+        for(let i = 0; i < n; i++)
+        {
+            if(checkbox[i].checked)
+            {
+                state++;
+            }
+        }
+        if(state == 0)
+        {
+            alert("Please choose at least one day.");
+            return false;
         }
     }
 

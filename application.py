@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from cachetools import TTLCache
 import time
+import datetime
 
 app = Flask(__name__)
 
@@ -52,13 +53,16 @@ def index():
     next_day = days[(days.index(day) + 1) % 7]
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
                    {"id": session["user_id"], "day": day}).fetchall()
-    nxt_day = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next",
+    next_day_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next",
                          {"id": session["user_id"], "next": next_day}).fetchall()
+    
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
-    date = time.strftime("%D")
-    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": date}).fetchall()
-    return render_template("index.html", subjects=q, next=nxt_day, next_day=next_day, day=day, dues=dues, quote=quote)
+    today = time.strftime("%D")
+    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": today}).fetchall()
+    tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%D")
+    next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": tomorrow}).fetchall()
+    return render_template("index.html", subjects=q, next=next_day_subjects, next_day=next_day, day=day, dues=dues, next_day_dues=next_day_dues, quote=quote)
 
 
 @app.route("/profile")
@@ -194,6 +198,9 @@ def s_type(module_type):
 
     if not module_type:
         return apology("please enter a type")
+    module_type = module_type.capitalize()
+    if module_type != "Lecture" and module_type != "Section" and module_type != "Lab":
+        return apology("invalid module type") 
     subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND type = :type ORDER BY start_time",
                           {"id": session["user_id"], "type": module_type}).fetchall()
     if not subjects:
@@ -257,44 +264,42 @@ def delete_day():
     return redirect("/")
 
 
-@app.route("/add/subject", methods=["GET", "POST"])
+@app.route("/add/subject", methods=["POST"])
 def setup():
     """Add subject"""
-
-    if request.method == "GET":
-        return render_template("setup.html")
-    else:
-        subject = request.form.get("subject")
-        subject_type = request.form.get("type")
-        lecturer = request.form.get("lecturer")
-        place = request.form.get("place")
-        start = request.form.get("start")
-        end = request.form.get("end")
-        day = request.form.get("day")
-        if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
-            return apology(message="please fill the form")
-        if end < start:
-            return apology("end time is before start time")
-        # days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-        # day = days.index(day)
-        subject = subject.rstrip().title()
-        subject_type = subject_type.capitalize()
-        lecturer = lecturer.rstrip().title()
-        place = place.rstrip().title()
+    
+    subject = request.form.get("subject")
+    subject_type = request.form.get("type")
+    lecturer = request.form.get("lecturer")
+    place = request.form.get("place")
+    start = request.form.get("start")
+    end = request.form.get("end")
+    days = request.form.getlist("day")
+    if not subject or not subject_type or not lecturer or not place or not start or not end or not days:
+        return apology(message="please fill the form")
+    if end <= start:
+        return apology("end time is before start time")
+    # days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    # day = days.index(day)
+    subject = subject.rstrip().title()
+    subject_type = subject_type.capitalize()
+    lecturer = lecturer.rstrip().title()
+    place = place.rstrip().title()
+    for day in days:
         q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
-                       {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
+                      {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
         if q:
-            return apology(f"{subject_type} already exists")
+            continue
         try:
             db.execute("INSERT INTO subjects (user_id, subject, type, lecturer, place, start_time, end_time, day) VALUES(:id, :subject, :type, :lecturer, :place, :start, :end, :day)",
-                       {"id": session["user_id"], "subject": subject, "type": subject_type, "lecturer": lecturer, "place": place, "start": start, "end": end, "day": day})
+                      {"id": session["user_id"], "subject": subject, "type": subject_type, "lecturer": lecturer, "place": place, "start": start, "end": end, "day": day})
             db.commit()
             session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                             {"id": session["user_id"]}).fetchall()
+                                            {"id": session["user_id"]}).fetchall()
         except:
             return apology("something went wrong with the database")
-        flash("Subject added!")
-        return redirect(f"/subjects/{subject}")
+    flash("Subject added!")
+    return redirect(f"/subjects/{subject}")
 
 
 @app.route("/ece/section/<n>", methods=["GET", "POST"])
