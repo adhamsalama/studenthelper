@@ -274,6 +274,9 @@ Home
     </table>
 </div>
 {% endif %}
+<hr>
+<div class="alert alert-primary" id="weather" style="display: none" role="alert">
+</div>
 {% if quote %}
 <div class="card text-center" id="header">
     <div class="card-header">
@@ -294,8 +297,7 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
         style="color: #9fcc25; margin-left: 4px; vertical-align: middle;">theysaidso.com</a></span>
         <br>
 {% endif %}
-<div class="alert alert-primary" id="weather" style="display: none" role="alert">
-</div>
+
 <script>
 
     let d1 = new Date(); //"now"
