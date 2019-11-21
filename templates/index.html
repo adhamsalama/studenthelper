@@ -72,43 +72,50 @@ Home
 
                         </div>
                         <div class="form-check left-checkbox">
-                            <input class="form-check-input" name="day" type="checkbox" value="Saturday" id="defaultCheck1">
+                            <input class="form-check-input" name="day" type="checkbox" value="Saturday"
+                                id="defaultCheck1">
                             <label class="form-check-label" for="defaultCheck1">
                                 Saturday
                             </label>
                         </div>
                         <div class="form-check left-checkbox">
-                            <input class="form-check-input" name="day" type="checkbox" value="Sunday" id="defaultCheck2">
+                            <input class="form-check-input" name="day" type="checkbox" value="Sunday"
+                                id="defaultCheck2">
                             <label class="form-check-label" for="defaultCheck2">
                                 Sunday
                             </label>
                         </div>
                         <div class="form-check left-checkbox">
-                            <input class="form-check-input" name="day" type="checkbox" value="Monday" id="defaultCheck3">
+                            <input class="form-check-input" name="day" type="checkbox" value="Monday"
+                                id="defaultCheck3">
                             <label class="form-check-label" for="defaultCheck3">
                                 Monday
                             </label>
                         </div>
                         <div class="form-check left-checkbox">
-                            <input class="form-check-input" name="day" type="checkbox" value="Tuesday" id="defaultCheck4">
+                            <input class="form-check-input" name="day" type="checkbox" value="Tuesday"
+                                id="defaultCheck4">
                             <label class="form-check-label" for="defaultCheck4">
                                 Tuesday
                             </label>
                         </div>
                         <div class="form-check left-checkbox">
-                            <input class="form-check-input" name="day" type="checkbox" value="Wednesday" id="defaultCheck5">
+                            <input class="form-check-input" name="day" type="checkbox" value="Wednesday"
+                                id="defaultCheck5">
                             <label class="form-check-label" for="defaultCheck5">
                                 Wednesday
                             </label>
                         </div>
                         <div class="form-check left-checkbox">
-                            <input class="form-check-input" name="day" type="checkbox" value="Thursday" id="defaultCheck6">
+                            <input class="form-check-input" name="day" type="checkbox" value="Thursday"
+                                id="defaultCheck6">
                             <label class="form-check-label" for="defaultCheck6">
                                 Thursday
                             </label>
                         </div>
                         <div class="form-check left-checkbox">
-                            <input class="form-check-input" name="day" type="checkbox" value="Friday" id="defaultCheck7">
+                            <input class="form-check-input" name="day" type="checkbox" value="Friday"
+                                id="defaultCheck7">
                             <label class="form-check-label" for="defaultCheck7">
                                 Friday
                             </label>
@@ -123,10 +130,13 @@ Home
     </div>
     <form method="get" class="mt-2" target="_blank">
         <div class="form-group mb-2">
-            <input type="text" placeholder="Search" name="q" class="form-control" style="display: inline-block !important; width: auto;" required>
+            <input type="text" placeholder="Search" name="q" class="form-control"
+                style="display: inline-block !important; width: auto;" required>
         </div>
-        <button type="submit" formaction="https://www.google.com/search?" class="btn btn-primary darkmode-ignore">Google</button>
-        <button type="submit" formaction="https://www.youtube.com/results?" class="btn btn-danger darkmode-ignore">Youtube</button>
+        <button type="submit" formaction="https://www.google.com/search?"
+            class="btn btn-primary darkmode-ignore">Google</button>
+        <button type="submit" formaction="https://www.youtube.com/results?"
+            class="btn btn-danger darkmode-ignore">Youtube</button>
     </form>
 </div>
 
@@ -266,23 +276,27 @@ Home
 {% endif %}
 {% if quote %}
 <div class="card text-center" id="header">
-        <div class="card-header">
-            Quote of The Day
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">
-                    {{ quote["quote"] }}
-                    <br>
-        - {{ quote["author"] }}.
-            </h5>
-
-        </div>
+    <div class="card-header">
+        Quote of The Day
     </div>
+    <div class="card-body">
+        <h5 class="card-title">
+            {{ quote["quote"] }}
+            <br>
+            - {{ quote["author"] }}.
+        </h5>
+
+    </div>
+</div>
 Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://theysaidso.com/branding/theysaidso.png"
         height="20" width="20" alt="theysaidso.com" /><a href="https://theysaidso.com" target="_blank"
         title="Powered by quotes from theysaidso.com"
         style="color: #9fcc25; margin-left: 4px; vertical-align: middle;">theysaidso.com</a></span>
+
 {% endif %}
+<div class="alert alert-primary text-center" style="display: inline-block" id="weather" role="alert">
+    Weather not available.
+</div>
 <script>
 
     let d1 = new Date(); //"now"
@@ -304,27 +318,44 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
     }
     let checkbox = document.querySelectorAll(".form-check-input");
     let n = checkbox.length;
-    document.querySelector("#f").onsubmit = function() {
+    document.querySelector("#f").onsubmit = function () {
         let start = document.querySelector("#start");
         let end = document.querySelector("#end");
-        if (end.value <= start.value)
-        {
+        if (end.value <= start.value) {
             alert("End time must be after start time.");
             return false;
         }
         let state = 0;
-        for(let i = 0; i < n; i++)
-        {
-            if(checkbox[i].checked)
-            {
+        for (let i = 0; i < n; i++) {
+            if (checkbox[i].checked) {
                 state++;
             }
         }
-        if(state == 0)
-        {
+        if (state == 0) {
             alert("Please choose at least one day.");
             return false;
         }
+    }
+    navigator.geolocation.getCurrentPosition(getLatLon);
+    function getLatLon(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        console.log("Latitude is " + latitude);
+        console.log("Longitude is " + longitude);
+        let request = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=aaacf01424b1f47c7dadcd2a1f8eb254&mode=html";
+        console.log(request);
+        /*$.get(request, function (data) {
+            console.log(data["name"]);
+            console.log(data["weather"][0]["main"]);
+            console.log(data["main"]["temp"]);
+            console.log(data["main"]["humidity"]);
+            document.querySelector("#city").innerHTML = data["name"];
+            document.querySelector("#state").innerHTML = data["weather"][0]["main"];
+            document.querySelector("#degree").innerHTML = data["main"]["temp"];
+            */
+            $( "#weather" ).load( request , function () {});
+        
+
     }
 
 </script>

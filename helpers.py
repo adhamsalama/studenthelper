@@ -35,6 +35,14 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def get_weather():
+    try:
+        response = requests.get("http://api.openweathermap.org/data/2.5/weather?q=Cairo&appid=aaacf01424b1f47c7dadcd2a1f8eb254")
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+    return response 
+
 
 def send_email(email, name, subject, message):
     server = smtplib.SMTP("smtp.gmail.com", 587)

@@ -8,7 +8,7 @@ Day
 <div class="jumbotron jumbotron-fluid text-center">
     <div class="container">
         <h1 class="display-4">{{ day }}</h1>
-        <p class="lead">Number of subjects: {{ subjects|length }}</p>
+        <p class="lead">Number of periods: {{ subjects|length }}</p>
         <form action="/delete/day" method="post" id="delete_day">
             <input type="hidden" name="day" value="{{ day }}">
             <button class="btn btn-danger darkmode-ignore" type="submit">Delete Day</button>

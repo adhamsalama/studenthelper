@@ -3,7 +3,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, get_time, send_email, quote_of_the_day
+from helpers import apology, login_required, get_time, send_email, quote_of_the_day, get_weather
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from cachetools import TTLCache
@@ -29,8 +29,7 @@ Session(app)
 
 
 # Set up database
-engine = create_engine(
-    "postgres://grqmmiufuzsfza:a13a64718d2c4d935697f2e615b6f06433646079629bf670c3e285bc2d35d8a2@ec2-54-204-37-92.compute-1.amazonaws.com:5432/d6vhlm4n2rs2f4")
+engine = create_engine("postgres://grqmmiufuzsfza:a13a64718d2c4d935697f2e615b6f06433646079629bf670c3e285bc2d35d8a2@ec2-54-204-37-92.compute-1.amazonaws.com:5432/d6vhlm4n2rs2f4")
 db = scoped_session(sessionmaker(bind=engine))
 
 
@@ -62,7 +61,8 @@ def index():
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": today}).fetchall()
     tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%D")
     next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": tomorrow}).fetchall()
-    return render_template("index.html", subjects=q, next=next_day_subjects, next_day=next_day, day=day, dues=dues, next_day_dues=next_day_dues, quote=quote)
+    weather = get_weather()
+    return render_template("index.html",weather=weather, subjects=q, next=next_day_subjects, next_day=next_day, day=day, dues=dues, next_day_dues=next_day_dues, quote=quote)
 
 
 @app.route("/profile")
@@ -126,6 +126,7 @@ def subject(subject):
         lecturer = q[0]["lecturer"]
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject ILIKE :s",
                       {"id": session["user_id"], "s": subject}).fetchall()
+    # Sort it
     return render_template("subject.html", info=q, lecturer=lecturer, dues=dues)
 
 
