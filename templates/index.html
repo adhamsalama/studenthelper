@@ -294,6 +294,7 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
         style="color: #9fcc25; margin-left: 4px; vertical-align: middle;">theysaidso.com</a></span>
 
 {% endif %}
+<br>
 <div class="alert alert-primary text-center" style="display: inline-block" id="weather" role="alert">
     Weather not available.
 </div>
@@ -344,7 +345,7 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
         console.log("Longitude is " + longitude);
         let request = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=aaacf01424b1f47c7dadcd2a1f8eb254&mode=html";
         console.log(request);
-        /*$.get(request, function (data) {
+        $.get(request, function (data) {
             console.log(data["name"]);
             console.log(data["weather"][0]["main"]);
             console.log(data["main"]["temp"]);
@@ -352,8 +353,10 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
             document.querySelector("#city").innerHTML = data["name"];
             document.querySelector("#state").innerHTML = data["weather"][0]["main"];
             document.querySelector("#degree").innerHTML = data["main"]["temp"];
-            */
-            $( "#weather" ).load( request , function () {});
+        });
+            $( "#weather" ).load( request , function () {
+                console.log("success");
+            });
         
 
     }
