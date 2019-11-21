@@ -292,18 +292,9 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
         height="20" width="20" alt="theysaidso.com" /><a href="https://theysaidso.com" target="_blank"
         title="Powered by quotes from theysaidso.com"
         style="color: #9fcc25; margin-left: 4px; vertical-align: middle;">theysaidso.com</a></span>
-
+        <br>
 {% endif %}
-<br>
-<div class="alert alert-dark mt-2" id="weather" style="display: none" role="alert">
-    <h4 class="alert-heading">Weather</h4>
-    City: <span id="city"></span>
-    <br>
-    Weather Condition: <span id="state"></span>
-    <br>
-    Degree: <span id="degree"></span> °C
-    <br>
-    Humidity: <span id="humidity"></span>
+<div class="alert alert-primary" id="weather" style="display: none" role="alert">
 </div>
 <script>
 
@@ -348,42 +339,10 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
     function getLatLon(position) {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
-        console.log("Latitude is " + latitude);
-        console.log("Longitude is " + longitude);
-        let request = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&appid=aaacf01424b1f47c7dadcd2a1f8eb254";
-        console.log(request);
-        $.get(request, function (data) {
-            /*console.log(data["name"]);
-            console.log(data["weather"][0]["main"]);
-            console.log(data["main"]["temp"]);
-            console.log(data["main"]["humidity"]);*/
-            document.querySelector("#city").innerHTML = data["name"];
-            document.querySelector("#state").innerHTML = data["weather"][0]["main"];
-            document.querySelector("#degree").innerHTML = data["main"]["temp"];
-            document.querySelector("#humidity").innerHTML = data["main"]["humidity"];
+        let request = "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&mode=html&appid=aaacf01424b1f47c7dadcd2a1f8eb254";
+        $("#weather").load(request, function () {
+            console.log("Successful request to weather API");
             document.querySelector("#weather").style.display = "inline-block";
-            let temp = parseFloat(data["main"]["temp"]);
-            console.log(temp);
-            if (temp <= 20)
-            {
-                document.querySelector("#weather").className = "alert alert-primary mt-2";
-            }
-            else if (temp > 20 && temp <= 28)
-            {
-                document.querySelector("#weather").className = "alert alert-success mt-2";
-            }
-            else if (temp > 28 && temp <= 32)
-            {
-                document.querySelector("#weather").className = "alert alert-warning mt-2";
-            }
-            else if (temp >= 35)
-            {
-                document.querySelector("#weather").className = "alert alert-danger mt-2";
-            }           
-            else
-            {
-                document.querySelector("#weather").className = "alert alert-light mt-2";
-            } 
         });
 
     }
