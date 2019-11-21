@@ -55,7 +55,6 @@ def index():
                    {"id": session["user_id"], "day": day}).fetchall()
     next_day_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next",
                          {"id": session["user_id"], "next": next_day}).fetchall()
-    
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
     today = time.strftime("%D")
