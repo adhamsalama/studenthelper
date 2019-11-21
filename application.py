@@ -75,10 +75,16 @@ def profile():
                           {"id": session["user_id"]}).fetchone()[0]
     subjects_type_count = db.execute("SELECT DISTINCT type, COUNT(*) FROM subjects WHERE user_id = :id GROUP BY type ORDER BY type",
                           {"id": session["user_id"]}).fetchall()
-    labs = subjects_type_count[0]["count"]
-    lectures = subjects_type_count[1]["count"]
-    sections = subjects_type_count[2]["count"]
-    total = labs + sections + lectures
+    if not subjects_type_count:
+        labs = 0
+        lectures = 0
+        sections = 0
+        total = 0
+    else:
+        labs = subjects_type_count[0]["count"]
+        lectures = subjects_type_count[1]["count"]
+        sections = subjects_type_count[2]["count"]
+        total = labs + sections + lectures
     days = db.execute("SELECT DISTINCT day, COUNT(day) FROM subjects WHERE user_id = :id GROUP BY day",
                       {"id": session["user_id"]}).fetchall()
     days_off = 7 - int(len(days))
