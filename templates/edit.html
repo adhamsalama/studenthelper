@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Edit Subject
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Edit Subject</h1>
+</div>
+{% endblock %}
+
+{% block main %}
+<form class="needs-validation" id="f" novalidate action="/edit/subject" method="post">
+    <div class="form-group mb-2">
+        <label for="subject">Subject</label>
+        <input autocomplete="off" autofocus class="form-control" value="{{ subject }}" id="subject" name="subject"
+            placeholder="Subject" type="text" required>
+        <div class="invalid-feedback">Please enter your subject</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <select class="custom-select form-control" name="type" required>
+            <option selected value="{{ type }}">{{ type }}</option>
+            <option value="Lecture">Lecture</option>
+            <option value="Section">Section</option>
+            <option value="Lab">Lab</option>
+        </select>
+        <div class="invalid-feedback">Please choose a type</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <label for="lecturer">Lecturer</label>
+        <input autocomplete="off" class="form-control" value="{{ lecturer }}" id="lecturer" name="lecturer"
+            placeholder="Lecturer" type="text" required>
+        <div class="invalid-feedback">Please enter your lecturer's name</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <label for="place">Place</label>
+        <input autocomplete="off" class="form-control" value="{{ place }}" name="place" id="place" placeholder="Place"
+            type="text" required>
+        <div class="invalid-feedback">Please enter the place</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <label for="start">Start time</label>
+        <input autocomplete="off" class="form-control" value="{{ start }}" name="start" id="start" type="time" required>
+        <div class="invalid-feedback">Please enter start time</div>
+
+    </div>
+    <div class="form-group mb-2">
+        <label for="end">End time</label>
+        <input autocomplete="off" class="form-control" value="{{ end }}" name="end" id="end" type="time" required>
+        <div class="invalid-feedback">Please enter end time</div>
+    </div>
+    <select class="custom-select form-control" name="day" required>
+        <option value="{{ day }}" selected>{{ day }}</option>
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option>
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+    </select>
+    <br>
+    <input type="hidden" value="{{ token }}" name="token">
+    <input value="{{ subject }}" name="old_subject" type="hidden">
+    <input value="{{ type }}" name="old_type" type="hidden">
+    <input value="{{ lecturer }}" name="old_lecturer" type="hidden">
+    <input value="{{ place }}" name="old_place" type="hidden">
+    <input value="{{ start }}" name="old_start" type="hidden">
+    <input value="{{ end }}" name="old_end" type="hidden">
+    <input value="{{ day }}" name="old_day" type="hidden">
+    <button class="btn btn-primary mt-3 ml-auto darkmode-ignore" type="submit">Edit</button>
+
+</form>
+{% endblock %}

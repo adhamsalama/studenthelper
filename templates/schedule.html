@@ -137,6 +137,7 @@ Schedule
                 <th scope="col">Place</th>
                 <th scope="col">Start Time</th>
                 <th scope="col">End Time</th>
+                <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
             </tr>
         </thead>
@@ -151,6 +152,18 @@ Schedule
                 <td><a href="/place/{{ subject['place'] | replace(' ', '_') }}">{{ subject["place"] }}</a></td>
                 <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span class="time">{{ subject["start_time"] }}</span></a></td>
                 <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span class="time">{{ subject["end_time"] }}</span></a></td>
+                <td>
+                    <form action="/edit/subject/form"method="get">
+                        <input type="hidden" name="subject" value="{{ subject['subject'] }}">
+                        <input type="hidden" name="type" value="{{ subject['type'] }}">
+                        <input type="hidden" name="lecturer" value="{{ subject['lecturer'] }}">
+                        <input type="hidden" name= "day" value="{{ subject['day'] }}">
+                        <input type="hidden" name="place" value="{{ subject['place'] }}">
+                        <input type="hidden" name="start" value="{{ subject['start_time'] }}">
+                        <input type="hidden" name="end" value="{{ subject['end_time'] }}">
+                        <button class="btn btn-primary darkmode-ignore" type="submit">Edit</button>
+                    </form>
+                </td>
                 <td>
                     <form action="/delete/subject" onsubmit=" return verify();" method="post">
                         <input type="hidden" name="subject" value="{{ subject['subject'] }}">

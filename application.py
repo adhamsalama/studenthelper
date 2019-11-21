@@ -9,6 +9,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from cachetools import TTLCache
 import time
 import datetime
+import secrets
 
 app = Flask(__name__)
 
@@ -128,12 +129,19 @@ def subject(subject):
     for s in q:
         if s["type"] == "Lecture":
             lecturer = s["lecturer"]
+            break
     else:
         lecturer = q[0]["lecturer"]
-    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject ILIKE :s",
+    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject ILIKE :s ORDER BY deadline",
                       {"id": session["user_id"], "s": subject}).fetchall()
     # Sort it
-    return render_template("subject.html", info=q, lecturer=lecturer, dues=dues)
+    subjects = {"Saturday": [], "Sunday": [], "Monday": [], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": []}
+    days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    counter = 0
+    for s in q:
+        subjects[s["day"]].append(s)
+        counter += 1
+    return render_template("subject.html", info=subjects, subject=subject, counter=counter, lecturer=lecturer, dues=dues)
 
 
 @app.route("/subjects")
@@ -165,6 +173,7 @@ def delete_entire_subject():
         return apology("subject doesn't exist")
     try:
         db.execute("DELETE FROM subjects WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": subject})
+        db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": subject})
         db.commit()
     except:
         return apology("somethign went wrong")
@@ -280,6 +289,7 @@ def delete_day():
 
 
 @app.route("/add/subject", methods=["POST"])
+@login_required
 def setup():
     """Add subject"""
     
@@ -317,6 +327,66 @@ def setup():
     return redirect(f"/subjects/{subject}")
 
 
+@app.route("/edit/subject/form")
+@login_required
+def edit_subject_form():
+    token = secrets.token_hex()
+    session["form_token"] = token
+    subject = request.args.get("subject")
+    subject_type = request.args.get("type")
+    lecturer = request.args.get("lecturer")
+    place = request.args.get("place")
+    start = request.args.get("start")
+    end = request.args.get("end")
+    day = request.args.get("day")
+    if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
+        return apology(message="please fill the form")
+    q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
+                      {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
+    if not q:
+        return apology("subject doesn't exist")
+    return render_template("edit.html", subject=subject, type=subject_type, 
+                           lecturer=lecturer, place=place, start=start, end=end, day=day, token=token)
+
+@app.route("/edit/subject", methods=["POST"])
+@login_required
+def edit_subject():
+    """Edit a subject"""
+
+    recieved_token = request.form.get("token")
+    if not recieved_token or recieved_token != session["form_token"]:
+        return apology("fuck off cross-site forgeing piece of shit")
+    subject = request.form.get("subject")
+    subject_type = request.form.get("type")
+    lecturer = request.form.get("lecturer")
+    place = request.form.get("place")
+    start = request.form.get("start")
+    end = request.form.get("end")
+    day = request.form.get("day")
+    old_subject = request.form.get("old_subject")
+    old_subject_type = request.form.get("old_type")
+    old_lecturer = request.form.get("old_lecturer")
+    old_place = request.form.get("old_place")
+    old_start = request.form.get("old_start")
+    old_end = request.form.get("old_end")
+    old_day = request.form.get("old_day")
+    if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
+        return apology("please fill the form")
+    subject = subject.title()
+    lecturer = lecturer.title()
+    place = place.title()
+    day = day.capitalize()
+    if not old_subject or not old_subject_type or not old_lecturer or not old_place or not old_start or not old_end or not old_day:
+        return apology("something went form") 
+    try:
+        db.execute("UPDATE subjects SET subject = :s, type = :t, lecturer = :l, place = :p, start_time = :st, end_time = :e, day = :d WHERE user_id = :id AND subject = :o_s AND type = :o_t AND lecturer = :o_l AND place = :o_p AND start_time = :o_st AND end_time = :o_e AND day = :o_d",
+                   {"s": subject, "t": subject_type, "p": place, "l": lecturer, "st": start, "e": end, "d": day, "id": session["user_id"],
+                   "o_s": old_subject, "o_t": old_subject_type, "o_p": old_place, "o_l": old_lecturer, "o_st": old_start, "o_e": old_end, "o_d": old_day})
+        db.commit()
+    except:
+        return apology("something went wrong")
+    flash("Subject edited!")
+    return redirect("/schedule")
 @app.route("/ece/section/<n>", methods=["GET", "POST"])
 @login_required
 def sfe(n):
