@@ -8,7 +8,7 @@ Results
 <div class="jumbotron jumbotron-fluid text-center">
     <div class="container">
         <h1 class="display-4">Results</h1>
-        <p class="lead">Number of results for "{{ q }}": {{ results|length + dues|length }}</p>
+        <p class="lead">Number of results for "{{ q }}": {{ results|length + dues|length + notes|length }}</p>
     </div>
 </div>
 {% endblock %}
