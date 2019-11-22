@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Edit Note
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Edit Note</h1>
+</div>
+{% endblock %}
+
+{% block main %}
+
+<form class="needs-validation" id="f" novalidate action="/edit/note" method="post">
+    <div class="form-group mb-2">
+        <select class="custom-select form-control" name="subject" required>
+            <option value="{{ subject }}" selected>{{ subject }}</option>
+            {% for subject in session["subjects"] %}
+            <option value="{{ subject[0] }}">{{ subject[0] }}</option>
+            {% endfor %}
+        </select>
+        <div class="invalid-feedback">Please choose a subject</div>
+    </div>
+    <div class="mb-3">
+        <textarea class="form-control med-form" placeholder="Note" name="note" required>{{ note }}</textarea>
+        <div class="invalid-feedback">Please write your note</div>
+    </div>
+    <input type="hidden" value="{{ subject }}" name="old_subject">
+    <input type="hidden" value="{{ note }}" name="old_note">
+    <button class="btn btn-primary mb-1 darkmode-ignore" type="submit">Edit</button>
+    </form>
+{% endblock %}

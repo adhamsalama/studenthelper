@@ -3,7 +3,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, get_time, send_email, quote_of_the_day, get_weather
+from helpers import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from cachetools import TTLCache
@@ -61,8 +61,7 @@ def index():
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": today}).fetchall()
     tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%D")
     next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": tomorrow}).fetchall()
-    weather = get_weather()
-    return render_template("index.html",weather=weather, subjects=q, next=next_day_subjects, next_day=next_day, day=day, dues=dues, next_day_dues=next_day_dues, quote=quote)
+    return render_template("index.html", subjects=q, next=next_day_subjects, next_day=next_day, day=day, dues=dues, next_day_dues=next_day_dues, quote=quote)
 
 
 @app.route("/profile")
@@ -140,7 +139,8 @@ def subject(subject):
     for s in q:
         subjects[s["day"]].append(s)
         counter += 1
-    return render_template("subject.html", info=subjects, subject=subject, counter=counter, lecturer=lecturer, dues=dues)
+    notes = db.execute("SELECT * FROM notes WHERE user_id = :id AND subject ILIKE :s", {"id": session["user_id"], "s": subject}).fetchall()
+    return render_template("subject.html", info=subjects, subject=subject, counter=counter, lecturer=lecturer, dues=dues, notes=notes)
 
 
 @app.route("/subjects")
@@ -326,6 +326,78 @@ def setup():
     flash("Subject added!")
     return redirect(f"/subjects/{subject}")
 
+@app.route("/notes")
+@login_required
+def notes():
+    notes = db.execute("SELECT * FROM notes WHERE user_id = :id ORDER BY date, subject", {"id": session["user_id"]}).fetchall()
+    return render_template("notes.html", notes=notes)
+
+@app.route("/add/note", methods=["POST"])
+@login_required
+def add_note():
+    subject = request.form.get("subject")
+    note = request.form.get("note")
+    if not subject or not note:
+        return apology("please fill the form")
+    try:
+        db.execute("INSERT INTO notes (user_id, subject, note) VALUES(:id, :s, :n)", {"id": session["user_id"], "s": subject, "n": note})
+        db.commit()
+    except Exception as x:
+        return apology(x)
+    flash("Note added!")
+    return redirect("/notes")
+
+@app.route("/edit/note", methods=["GET", "POST"])
+@login_required
+def edit_note():
+    if request.method == "GET":
+        subject = request.args.get("subject")
+        note = request.args.get("note")
+        if not subject or not note:
+            return apology("something went wrong")
+        return render_template("edit_note.html", subject=subject, note=note)
+    else:
+        subject = request.form.get("subject")
+        note = request.form.get("note")
+        old_subject = request.form.get("old_subject")
+        old_note = request.form.get("old_note")
+        if not subject or not note or not old_subject or not old_note:
+            return apology("something went wrong")
+        q = db.execute("SELECT * FROM notes WHERE user_id = :id AND subject = :s AND note = :n",
+                       {"id": session["user_id"], "s": old_subject, "n": old_note}).fetchone()
+        if not q:
+            return apology("note doesn't exist")
+        try:
+            db.execute("UPDATE notes SET subject = :s, note = :n WHERE user_id = :id AND subject = :o_s AND note = :o_n",
+                       {"id": session["user_id"], "s": subject, "n": note, "o_s": old_subject, "o_n": old_note})
+            db.commit()
+        except:
+            return apology("something went wrong")
+        flash("Note edited!")
+        return redirect("/notes")
+
+@app.route("/delete/note", methods=["POST"])
+@login_required
+def delete_note():
+    subject = request.form.get("subject")
+    note = request.form.get("note")
+    if not subject or not note:
+        return apology("something went wrong")
+    try:
+        db.execute("DELETE FROM notes WHERE user_id = :id AND subject = :s AND note = :n", {"id": session["user_id"], "s": subject, "n": note})
+        db.commit()
+    except Exception as x:
+        return apology(x)
+    flash("Note deleted!")
+    return redirect("/notes")
+
+@app.route("/delete/notes", methods=["POST"])
+@login_required
+def delete_notes():
+    db.execute("DELETE FROM notes WHERE user_id = :id", {"id": session["user_id"]})
+    db.commit()
+    flash("All notes deleted!")
+    return redirect("/")
 
 @app.route("/edit/subject/form")
 @login_required
@@ -519,11 +591,12 @@ def search():
     try:
         results = db.execute("SELECT * FROM subjects WHERE user_id = :id AND (subject ILIKE :q OR type ILIKE :q OR lecturer ILIKE :q OR place ILIKE :q OR day ILIKE :q)",
                          {"id": session["user_id"], "q": "%" + q + "%"}).fetchall()
-        dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND (subject ILIKE :q OR subject ILIKE :q OR type ILIKE :q OR required ILIKE :q)",
+        dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND (subject ILIKE :q OR type ILIKE :q OR required ILIKE :q)",
                           {"id": session["user_id"], "q": "%" + q + "%"}).fetchall()
+        notes = db.execute("SELECT * FROM notes WHERE user_id = :id AND (subject ILIKE :q OR note ILIKE :q)",{"id": session["user_id"], "q": "%" + q + "%"}).fetchall()
     except:
         return apology("something went wrong")
-    return render_template("results.html", results=results, dues=dues, q=q)
+    return render_template("results.html", results=results, dues=dues, notes=notes, q=q)
 
 
 @app.route("/settings/change_password", methods=["GET", "POST"])

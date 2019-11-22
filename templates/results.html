@@ -83,6 +83,25 @@ Results
 </div>
 
 {% endif %}
+{% if not notes %}
+<div class="alert alert-danger" role="alert">
+    No notes found!
+</div>
+{% else %}
+{% for note in notes %}
+<div class="card text-center m-3" id="header">
+    <div class="card-header">
+        {{ note["subject"] }}
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">
+            {{ note["date"] }}
+        </h5>
+        {{ note["note"] }}
+    </div>
+</div>
+{% endfor %}
+{% endif %}
 
 
 <script>
