@@ -297,46 +297,9 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
         style="color: #9fcc25; margin-left: 4px; vertical-align: middle;">theysaidso.com</a></span>
         <br>
 {% endif %}
-
+<script src="/static/add_subject.js"></script>
+<script src="/static/due.js"></script>
 <script>
-
-    let d1 = new Date(); //"now"
-    let deadlines = document.querySelectorAll(".deadline");
-    let dates = document.querySelectorAll(".time-left");
-    for (let i = 0; i < deadlines.length; i++) {
-        let d2 = new Date(deadlines[i].innerHTML);
-        let diffTime = d2 - d1;
-        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays == 0) {
-            dates[i].innerHTML = "Today";
-        }
-        else if (diffDays == 1) {
-            dates[i].innerHTML = "Tomorrow";
-        }
-        else {
-            dates[i].innerHTML = diffDays;
-        }
-    }
-    let checkbox = document.querySelectorAll(".form-check-input");
-    let n = checkbox.length;
-    document.querySelector("#f").onsubmit = function () {
-        let start = document.querySelector("#start");
-        let end = document.querySelector("#end");
-        if (end.value <= start.value) {
-            alert("End time must be after start time.");
-            return false;
-        }
-        let state = 0;
-        for (let i = 0; i < n; i++) {
-            if (checkbox[i].checked) {
-                state++;
-            }
-        }
-        if (state == 0) {
-            alert("Please choose at least one day.");
-            return false;
-        }
-    }
     navigator.geolocation.getCurrentPosition(getLatLon);
     function getLatLon(position) {
         var latitude = position.coords.latitude;
@@ -346,7 +309,6 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
             console.log("Successful request to weather API");
             document.querySelector("#weather").style.display = "inline-block";
         });
-
     }
 </script>
 

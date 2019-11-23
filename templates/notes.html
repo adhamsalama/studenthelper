@@ -70,16 +70,18 @@
         </h5>
         {{ note["note"] }}
     </div>
+    <div style="display:flex; margin: auto">
     <form action="/edit/note" method="get">
         <input type="hidden" name="subject" value="{{ note['subject'] }}">
         <input type="hidden" name= "note" value="{{ note['note'] }}">
-        <button class="btn btn-primary mb-1 darkmode-ignore" type="submit">Edit</button>
+        <button class="btn btn-primary m-1 darkmode-ignore" type="submit">Edit</button>
     </form>
     <form action="/delete/note" method="post">
         <input type="hidden" name="subject" value="{{ note['subject'] }}">
         <input type="hidden" name= "note" value="{{ note['note'] }}">
-        <button onclick="return confirm('Are you sure you want to delete this note?');"  class="btn btn-danger mb-1 darkmode-ignore" type="submit">Delete</button>
+        <button onclick="return confirm('Are you sure you want to delete this note?');"  class="btn btn-danger m-1 darkmode-ignore" type="submit">Delete</button>
     </form>
+    </div>
 </div>
 {% endfor %}
 {% endif %}

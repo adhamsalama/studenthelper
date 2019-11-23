@@ -304,12 +304,18 @@ def setup():
         return apology(message="please fill the form")
     if end <= start:
         return apology("end time is before start time")
+    if len(subject) > 80:
+        return apology("maximum subject length is 80 characters")
+    if (len(lecturer) or len(place)) > 50:
+        return apology("maximum lecturer or place length is 50 characters")
     # days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     # day = days.index(day)
     subject = subject.rstrip().title()
     subject_type = subject_type.capitalize()
     lecturer = lecturer.rstrip().title()
     place = place.rstrip().title()
+    if subject_type not in ["Lab", "Lecture", "Section"]:
+        return apology("invalid subject type")
     for day in days:
         q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
                       {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
