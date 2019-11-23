@@ -475,8 +475,8 @@ def sfe(n):
     if request.method == "GET":
         return render_template("sfe.html", n=n)
     else:
-        if n > 2:
-            return apology(message="section 3 not added yet")
+        if n > 3:
+            return apology(message="section not found")
         q = db.execute("SELECT * FROM subjects WHERE user_id = :id", {"id": 10+n}).fetchall()
         for s in q:
             db.execute("INSERT INTO subjects (user_id, subject, type, lecturer, place, start_time, end_time, day) VALUES(:id, :s, :t, :l, :p, :st, :e, :d)",
