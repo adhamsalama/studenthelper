@@ -139,7 +139,7 @@ def subject(subject):
     for s in q:
         subjects[s["day"]].append(s)
         counter += 1
-    notes = db.execute("SELECT * FROM notes WHERE user_id = :id AND subject ILIKE :s", {"id": session["user_id"], "s": subject}).fetchall()
+    notes = db.execute("SELECT * FROM notes WHERE user_id = :id AND subject ILIKE :s ORDER BY date DESC", {"id": session["user_id"], "s": subject}).fetchall()
     return render_template("subject.html", info=subjects, subject=subject, counter=counter, lecturer=lecturer, dues=dues, notes=notes)
 
 
@@ -335,7 +335,7 @@ def setup():
 @app.route("/notes")
 @login_required
 def notes():
-    notes = db.execute("SELECT * FROM notes WHERE user_id = :id ORDER BY date, subject", {"id": session["user_id"]}).fetchall()
+    notes = db.execute("SELECT * FROM notes WHERE user_id = :id ORDER BY date DESC", {"id": session["user_id"]}).fetchall()
     return render_template("notes.html", notes=notes)
 
 @app.route("/add/note", methods=["POST"])
@@ -476,7 +476,7 @@ def sfe(n):
         return render_template("sfe.html", n=n)
     else:
         if n > 3:
-            return apology(message="section not found")
+            return apology("section not found")
         q = db.execute("SELECT * FROM subjects WHERE user_id = :id", {"id": 10+n}).fetchall()
         for s in q:
             db.execute("INSERT INTO subjects (user_id, subject, type, lecturer, place, start_time, end_time, day) VALUES(:id, :s, :t, :l, :p, :st, :e, :d)",
@@ -819,7 +819,6 @@ def register():
     if len(username) < 3:
         return apology("please enter a username with 3 or more characters")
     hash_pw = generate_password_hash(password)
-    time = get_time()
     try:
         if email:
             q = db.execute("SELECT email FROM users WHERE email = :email", {"email": email}).fetchone()
@@ -831,8 +830,8 @@ def register():
             university = university.title()
         else:
             university = None
-        db.execute("INSERT INTO users(username, hash, email, time, university) VALUES(:username, :hash_pw, :email, :time, :university)",
-                   {"username": username, "hash_pw": hash_pw, "email": email, "time": time, "university": university})
+        db.execute("INSERT INTO users(username, hash, email, time, university) VALUES(:username, :hash_pw, :email, CURRENT_DATE, :university)",
+                   {"username": username, "hash_pw": hash_pw, "email": email, "university": university})
         db.commit()
     except:
         return apology("something went wrong with the database.")
@@ -845,6 +844,7 @@ def register():
     session["user_id"] = rows["id"]
     session["username"] = rows["username"]
     session["email"] = rows["email"]
+    session["uni"] = rows["university"]
     flash("You're now registered!")
     return redirect("/")
 
