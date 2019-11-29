@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Building
+{{ place }}
 {% endblock %}
 
 {% block head %}
 <div class="jumbotron jumbotron-fluid text-center">
     <div class="container">
         <h1 class="display-4">{{ place }}</h1>
-        <p class="lead">Number of periods: {{ subjects|length }}
+        <p class="lead">Number of periods: {{ periods }}
             <br>
-            Number of days: {{ counter }}
+            Number of days: {{ days }}
         </p>
     </div>
 </div>

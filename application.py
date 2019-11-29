@@ -246,14 +246,16 @@ def place(place):
     d = {"Saturday": [], "Sunday": [], "Monday": [], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": []}
     for s in q:
         d[s["day"]].append(s)
-    counter = 0
-    for day in d:
-        if d[day]:
-            counter += 1
+    days = 0
+    periods = 0
+    for day in d.values():
+        if len(day) > 0:
+            days += 1
+        periods += len(day)
     # days = set()
     # for s in q:
     #     days.add(s["day"])
-    return render_template("place.html", place=place, subjects=d, counter=counter)
+    return render_template("place.html", place=place, subjects=d, days=days, periods=periods)
 
 
 @app.route("/days/<day>")
