@@ -91,7 +91,7 @@ def profile():
     d = {"Saturday": "", "Sunday": "", "Monday": "", "Tuesday": "", "Wednesday": "", "Thursday": "", "Friday": ""}
     for x in days:
         d[x["day"]] = x["count"]
-    time = db.execute("SELECT date FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()["0"]
+    time = db.execute("SELECT date FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()[0]
     return render_template("profile.html", subjects=subjects, lectures=lectures, sections=sections, labs=labs, total=total,
                            days=d, days_off=days_off, date=time)
 
