@@ -143,10 +143,10 @@
         <caption>Subjects</caption>
         <thead>
             <tr>
+                <th scope="col">Day</th>
                 <th scope="col">Type</th>
                 <th scope="col">Place</th>
                 <th scope="col">Lectuer</th>
-                <th scope="col">Day</th>
                 <th scope="col">Start Time</th>
                 <th scope="col">End Time</th>
                 <th scope="col">Edit</th>
@@ -157,10 +157,10 @@
             {% for subject in info.values() %}
             {% for day in subject %}
             <tr>
+                <td><a href="/days/{{ day['day'] }}">{{ day["day"] }}</a></td>
                 <td><a href="/type/{{ day['type'] }}">{{ day["type"] }}</a></td>
                 <td><a href="/place/{{ day['place'] | replace(' ', '_') }}">{{ day["place"] }}</a></td>
                 <td><a href="/type/{{ day['type'] }}">{{ day["lecturer"] }}</a></td>
-                <td><a href="/days/{{ day['day'] }}">{{ day["day"] }}</a></td>
                 <td><a href="/subjects/{{ day['subject'] | replace(' ', '_') }}"><span
                             class="time">{{ day["start_time"] }}</span></a></td>
                 <td><a href="/subjects/{{ day['subject'] | replace(' ', '_') }}"><span

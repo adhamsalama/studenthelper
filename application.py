@@ -91,9 +91,9 @@ def profile():
     d = {"Saturday": "", "Sunday": "", "Monday": "", "Tuesday": "", "Wednesday": "", "Thursday": "", "Friday": ""}
     for x in days:
         d[x["day"]] = x["count"]
-    time = db.execute("SELECT time FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()["time"]
+    time = db.execute("SELECT date FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()["0"]
     return render_template("profile.html", subjects=subjects, lectures=lectures, sections=sections, labs=labs, total=total,
-                           days=d, days_off=days_off, time=time)
+                           days=d, days_off=days_off, date=time)
 
 
 @app.route("/schedule")
@@ -248,7 +248,7 @@ def place(place):
         d[s["day"]].append(s)
     counter = 0
     for day in d:
-        if len(d[day]):
+        if d[day]:
             counter += 1
     # days = set()
     # for s in q:
@@ -423,7 +423,7 @@ def edit_subject_form():
                       {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
     if not q:
         return apology("subject doesn't exist")
-    return render_template("edit.html", subject=subject, type=subject_type, 
+    return render_template("edit_subject.html", subject=subject, type=subject_type, 
                            lecturer=lecturer, place=place, start=start, end=end, day=day, token=token)
 
 @app.route("/edit/subject", methods=["POST"])
@@ -540,12 +540,11 @@ def add_due():
                 db.execute("INSERT INTO dues (user_id, subject, type, required, deadline) VALUES(:id, :s, :t, :r, :d)",
                            {"id": session["user_id"], "t": s_type, "s": subject, "r": required, "d": deadline})
                 db.commit()
-            except Exception as x:
+            except:
                 return apology("something went wrong with the database")
             flash("Due added successfully!")
             return redirect("/dues")
-    else:
-        return apology("subject doesn't exist")
+    return apology("subject doesn't exist")
 
 
 @app.route("/delete/due", methods=["POST"])
@@ -818,19 +817,25 @@ def register():
             return apology(message="Please enter a valid username.")
     if len(username) < 3:
         return apology("please enter a username with 3 or more characters")
+    if len(username) > 50:
+        return apology("username limit is 50 characters")
     hash_pw = generate_password_hash(password)
     try:
         if email:
+            if len(email) > 70:
+                return apology("email limit is 50 characters")
             q = db.execute("SELECT email FROM users WHERE email = :email", {"email": email}).fetchone()
             if q:
                 return apology("this email already exists")
         if not email:
             email = None
         if university:
+            if len(university) > 70:
+                return apology("university limit is 70 characters")
             university = university.title()
         else:
             university = None
-        db.execute("INSERT INTO users(username, hash, email, time, university) VALUES(:username, :hash_pw, :email, CURRENT_DATE, :university)",
+        db.execute("INSERT INTO users(username, hash, email, date, university) VALUES(:username, :hash_pw, :email, CURRENT_DATE, :university)",
                    {"username": username, "hash_pw": hash_pw, "email": email, "university": university})
         db.commit()
     except:
