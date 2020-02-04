@@ -157,6 +157,7 @@ def delete():
     try:
         db.execute("DELETE FROM subjects WHERE user_id = :id", {"id": session["user_id"]})
         db.execute("DELETE FROM dues WHERE user_id = :id", {"id": session["user_id"]})
+        db.execute("DELETE FROM notes WHERE user_id = :id", {"id": session["user_id"]})
         db.commit()
     except:
         return apology("something went wrong")
