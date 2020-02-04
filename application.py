@@ -51,6 +51,7 @@ def index():
     days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     # day = days.index(day)
     next_day = days[(days.index(day) + 1) % 7]
+    day += ", " + time.strftime("%b %d %Y")
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
                    {"id": session["user_id"], "day": day}).fetchall()
     next_day_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next",
@@ -544,7 +545,7 @@ def add_due():
                 db.commit()
             except:
                 return apology("something went wrong with the database")
-            flash("Due added successfully!")
+            flash("Due added!")
             return redirect("/dues")
     return apology("subject doesn't exist")
 
@@ -569,7 +570,7 @@ def delete_due():
         db.commit()
     except:
         return apology("something went wrong with the database")
-    flash("Due deleted successfully!")
+    flash("Due deleted!")
     return redirect("/dues")
 
 

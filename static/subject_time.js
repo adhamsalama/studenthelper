@@ -13,4 +13,3 @@ for (let i = 0, n = time.length; i < n; i++) {
     hours = ((hours + 11) % 12 + 1);
     time[i].innerHTML = hours + ":" + minutes + suffix;
 }
-

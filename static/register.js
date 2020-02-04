@@ -3,7 +3,7 @@ let email = document.querySelector("#email")
 let password = document.querySelector("#password");
 let confirmation = document.querySelector("#confirmation");
 let form = document.querySelector('form');
-form.onsubmit = function() {
+form.onsubmit = function () {
     if (!username.value) {
         return false;
     }
@@ -58,10 +58,10 @@ form.onsubmit = function() {
     $.ajax({
         url: '/check?username=' + username.value + '&email=' + email.value,
         type: 'GET',
-        success: function(data) {
+        success: function (data) {
             console.log(data);
             if (data == true) {
-                
+
                 form.submit();
             }
             else {
@@ -72,7 +72,7 @@ form.onsubmit = function() {
             }
 
         },
-        error: function(error) {
+        error: function (error) {
             console.log(error);
 
         }
@@ -82,4 +82,3 @@ form.onsubmit = function() {
     return false;
 
 };
-
