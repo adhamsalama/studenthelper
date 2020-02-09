@@ -51,13 +51,13 @@ def index():
     days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     # day = days.index(day)
     next_day = days[(days.index(day) + 1) % 7]
-    day += ", " + time.strftime("%b %d %Y")
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
                    {"id": session["user_id"], "day": day}).fetchall()
     next_day_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next",
                          {"id": session["user_id"], "next": next_day}).fetchall()
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
+    day += ", " + time.strftime("%b %d %Y")
     today = time.strftime("%D")
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": today}).fetchall()
     tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%D")
