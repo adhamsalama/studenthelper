@@ -176,13 +176,14 @@ def delete_entire_subject():
     try:
         db.execute("DELETE FROM subjects WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": subject})
         db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": subject})
+        db.execute("DELETE FROM notes WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": subject})
         db.commit()
     except:
         return apology("somethign went wrong")
     flash("Subject deleted!")
     return redirect("/")
 
-
+#Should be delete/period for more clarity
 @app.route("/delete/subject", methods=["POST"])
 @login_required
 def delete_subject():
