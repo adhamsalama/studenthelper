@@ -146,7 +146,7 @@ Home
 {% if subjects %}
 <div class="table-responsive darkmode-ignore">
     <table class="table table-dark table-striped table-hover">
-        <caption>Subjects</caption>
+        <caption>Today's Periods</caption>
         <thead>
             <tr>
                 <th scope="col">Subject</th>
@@ -203,7 +203,7 @@ Home
 
 <div class="table-responsive darkmode-ignore">
     <table class="table table-dark table-striped table-hover">
-        <caption>Dues</caption>
+        <caption>Today's Dues</caption>
         <thead>
             <tr>
                 <th scope="col">Subject</th>
@@ -228,15 +228,38 @@ Home
 </div>
 {% endif %}
 {% if next %}
-<a href="/days/{{ next_day }}">
-    <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">Study for tomorrow!</h4>
-        <p>You have {{ next|length }} periods(s) tomorrow.
-            <br>
-            Click to view tomorrow's lectures.
-        </p>
-    </div>
-</a>
+<div class="table-responsive darkmode-ignore">
+    <table class="table table-dark table-striped table-hover">
+        <caption>Tomorrow's Periods</caption>
+        <thead>
+            <tr>
+                <th scope="col">Subject</th>
+                <th scope="col">Type</th>
+                <th scope="col">Lecturer</th>
+                <th scope="col">Place</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in next %}
+            <tr>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
+                <td><a href="/type/{{ subject['type'] }}">{{ subject["type"] }}</a></td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>
+                <!--    <td><a href="/days/{{ subject['day'] }}" class="link"><span class="day">{{ subject["day"] }}</span></a> </td> -->
+                <td><a href="/place/{{ subject['place'] | replace(' ', '_') }}">{{ subject["place"] }}</a></td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
+                            class="time">{{ subject["start_time"] }}</a>
+                </td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
+                            class="time">{{ subject["end_time"] }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% else %}
 <div class="alert alert-primary" role="alert">
     Woohoo! You don't have any subjects tomorrow!
