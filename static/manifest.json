@@ -5,7 +5,7 @@
 	"start_url" : "https://thestudenthelper.herokuapp.com/",
 	"display" : "standalone",
 	"lang" : "English",
-	"scope" : "/",
+	"scope" : "https://thestudenthelper.herokuapp.com/",
 	"orientation" : "any",
 	"icons": [
 		{
