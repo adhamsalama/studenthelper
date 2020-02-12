@@ -4,7 +4,6 @@ function verify_due() {
 let d1 = new Date(); //"now"
 let deadlines = document.querySelectorAll(".deadline");
 let dates = document.querySelectorAll(".time-left");
-console.log(deadlines.length);
 for (let i = 0; i < deadlines.length; i++) {
     let d2 = new Date(deadlines[i].innerHTML);
     let diffTime = d2 - d1;
