@@ -183,6 +183,14 @@ def delete_entire_subject():
     flash("Subject deleted!")
     return redirect("/")
 
+#For Server Worker
+@app.route("/pwabuilder-sw.js")
+#@login_required
+def send_js():
+    from flask import current_app
+    return current_app.send_static_file('pwabuilder-sw.js')
+
+    
 #Should be delete/period for more clarity
 @app.route("/delete/subject", methods=["POST"])
 @login_required
