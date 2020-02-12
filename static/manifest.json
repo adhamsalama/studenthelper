@@ -1,6 +1,6 @@
 {
 	"name" : "Student Helper",
-	"short_name" : "ST",
+	"short_name" : "Student Helper",
 	"description" : "A website that helps students organize their studies.",
 	"start_url" : "https://thestudenthelper.herokuapp.com/",
 	"display" : "standalone",
