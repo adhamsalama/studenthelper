@@ -31,7 +31,7 @@ self.addEventListener("install", function (event) {
 
 // If any fetch fails, it will show the offline page.
 self.addEventListener("fetch", function (event) {
-  if (event.request.method !== "GET") return;
+  /*if (event.request.method !== "GET") return;
 
   event.respondWith(
     fetch(event.request).catch(function (error) {
@@ -48,7 +48,7 @@ self.addEventListener("fetch", function (event) {
         return cache.match(offlineFallbackPage);
       });
     })
-  );
+  );*/
 });
 
 // This is an event that can be fired from your page to tell the SW to update the offline page
