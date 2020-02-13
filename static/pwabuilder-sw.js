@@ -1,7 +1,7 @@
 // This is the "Offline page" service worker
 
 const CACHE = "pwabuilder-page";
-offlineFallbackPage = '/';
+const offlineFallbackPage = '/';
 const assets = [
     '/',
     '/schedule',
