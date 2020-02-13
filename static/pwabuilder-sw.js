@@ -8,7 +8,10 @@ const assets = [
     '/schedule',
     '/dues',
     '/notes',
-    'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'
+    '/static/styles.css',
+    '/static/subject_time.js',
+    '/static/due.js',
+    'https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'
 ];
 // TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
 //const offlineFallbackPage = "index.html";
@@ -26,7 +29,12 @@ self.addEventListener("install", function (event) {
       }
       
       return cache.add(offlineFallbackPage);*/
-      cache.addAll(assets);
+      for(let i = 0; i < assets.length; i++)
+      {
+        cache.add(assets[i]);
+        console.log(assets[i]);
+      }
+      //cache.addAll(assets);
       console.log(assets.length);
       /*for(let i = 0; i < assets.length; i++)
       {
@@ -40,12 +48,26 @@ self.addEventListener("install", function (event) {
 
 // If any fetch fails, it will show the offline page.
 self.addEventListener("fetch", function (event) {
+  if (event.request.method !== "GET") return;
+
   event.respondWith(
-    caches.match(event.request).then(cacheRes =>{
-      return cacheRes || fetch(event.request)
+    fetch(event.request).catch(function (error) {
+      // The following validates that the request was for a navigation to a new document
+      if (
+        event.request.destination !== "document" ||
+        event.request.mode !== "navigate"
+      ) {
+        return;
+      }
+
+      console.error("[PWA Builder] Network request Failed. Serving offline page " + error);
+      return caches.open(CACHE).then(function (cache) {
+        return cache.match(event.request);
+      });
     })
-  )
+  );
 });
+
 
 // This is an event that can be fired from your page to tell the SW to update the offline page
 /*self.addEventListener("refreshOffline", function () {
