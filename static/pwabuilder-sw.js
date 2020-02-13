@@ -8,7 +8,7 @@ const assets = [
     '/schedule',
     '/dues',
     '/notes',
-    '/static/styles.css',
+    'styles.css',
     '/static/subject_time.js',
     '/static/due.js',
     'https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'
@@ -32,10 +32,8 @@ self.addEventListener("install", function (event) {
       for(let i = 0; i < assets.length; i++)
       {
         cache.add(assets[i]);
-        console.log(assets[i]);
       }
       //cache.addAll(assets);
-      console.log(assets.length);
       /*for(let i = 0; i < assets.length; i++)
       {
           console.log(assets[i]);
@@ -43,7 +41,6 @@ self.addEventListener("install", function (event) {
       }*/
     })
   );
-  console.log("Done");
 });
 
 // If any fetch fails, it will show the offline page.
@@ -60,9 +57,9 @@ self.addEventListener("fetch", function (event) {
         return;
       }
 
-      console.error("[PWA Builder] Network request Failed. Serving offline page " + error);
+      console.error("[PWA Builder] Network request Failed. Serving offline page ");
       return caches.open(CACHE).then(function (cache) {
-        return cache.match(event.request);
+        return cache.match(event.request) || fetch(event.request);
       });
     })
   );
@@ -70,13 +67,13 @@ self.addEventListener("fetch", function (event) {
 
 
 // This is an event that can be fired from your page to tell the SW to update the offline page
-/*self.addEventListener("refreshOffline", function () {
-  const offlinePageRequest = new Request(offlineFallbackPage);
+self.addEventListener("refreshOffline", function () {
+  const req = new Request('/');
 
-  return fetch(offlineFallbackPage).then(function (response) {
+  return fetch(req).then(function (response) {
     return caches.open(CACHE).then(function (cache) {
       console.log("[PWA Builder] Offline page updated from refreshOffline event: " + response.url);
-      return cache.put(offlinePageRequest, response);
+      return cache.put(req, response);
     });
   });
-});*/
+});

@@ -53,7 +53,7 @@ def index():
     next_day = days[(days.index(day) + 1) % 7]
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
                    {"id": session["user_id"], "day": day}).fetchall()
-    next_day_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next",
+    next_day_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next ORDER BY start_time",
                          {"id": session["user_id"], "next": next_day}).fetchall()
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()

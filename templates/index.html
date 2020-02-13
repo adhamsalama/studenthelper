@@ -6,7 +6,7 @@ Home
 
 {% block head %}
 <div class="jumbotron text-center">
-    <h1 class="display-4">Welcome to Student Helper!</h1>
+    <h1 class="display-4">Welcome, {{ session["username"] }}!</h1>
     <p class="lead">
         Today is {{ day }}.
         <br>
