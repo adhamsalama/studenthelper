@@ -29,7 +29,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="needs-validation" id="f" novalidate action="/add/subject" method="post">
+                        <form class="needs-validation" id="f" novalidate action="/add/period" method="post">
                             <div class="form-group mb-2">
                                 <input   class="form-control" name="subject"
                                     placeholder="Subject" type="text" required>
@@ -130,7 +130,7 @@
                 </div>
             </div>
         </div>
-        <form action="/delete/entire_subject" method="post" id="delete_subject">
+        <form action="/delete/subject" method="post" id="delete_subject">
             <input type="hidden" name="subject" value="{{ subject }}">
             <button class="btn btn-danger darkmode-ignore" type="submit">Delete Subject</button>
         </form>
@@ -140,7 +140,7 @@
 {% block main %}
 <div class="table-responsive darkmode-ignore">
     <table class="table table-dark table-striped table-hover">
-        <caption>Subjects</caption>
+        <caption>Periods</caption>
         <thead>
             <tr>
                 <th scope="col">Day</th>
@@ -166,7 +166,7 @@
                 <td><a href="/subjects/{{ day['subject'] | replace(' ', '_') }}"><span
                             class="time">{{ day["end_time"] }}</span></a></td>
                 <td>
-                    <form action="/edit/subject/form" method="get">
+                    <form action="/edit/period" method="get">
                         <input type="hidden" name="subject" value="{{ day['subject'] }}">
                         <input type="hidden" name="type" value="{{ day['type'] }}">
                         <input type="hidden" name="lecturer" value="{{ day['lecturer'] }}">
@@ -178,7 +178,7 @@
                     </form>
                 </td>
                 <td>
-                    <form action="/delete/subject" onsubmit=" return verify();" method="post">
+                    <form action="/delete/period" onsubmit=" return verify();" method="post">
                         <input type="hidden" name="subject" value="{{ day['subject'] }}">
                         <input type="hidden" name="type" value="{{ day['type'] }}">
                         <input type="hidden" name="lecturer" value="{{ day['lecturer'] }}">
@@ -271,7 +271,7 @@
 <script>
     let form = document.querySelector("#delete_subject");
     form.onsubmit = function () {
-        return confirm("Are you sure you want to delete this subject?");
+        return confirm("Are you sure you want to delete all of the periods, dues and notes of this subject?");
     }
     function verify() {
         return confirm("Are you sure you want to delete this period?");

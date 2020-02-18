@@ -184,10 +184,10 @@ def delete():
     return redirect("/")
 
 
-@app.route("/delete/entire_subject", methods=["POST"])
+@app.route("/delete/subject", methods=["POST"])
 @login_required
-def delete_entire_subject():
-    """Delete entire subject"""
+def delete_subject():
+    """Deletes entire subject"""
 
     subject = request.form.get("subject")
     if not subject:
@@ -211,10 +211,10 @@ def send_js():
 
     
 #Should be delete/period for more clarity
-@app.route("/delete/subject", methods=["POST"])
+@app.route("/delete/period", methods=["POST"])
 @login_required
-def delete_subject():
-    """Delete one subject"""
+def delete_period():
+    """Deletes one period"""
 
     s = request.form.get("subject")
     t = request.form.get("type")
@@ -236,8 +236,7 @@ def delete_subject():
     # Update subjects in navbar because this might be the last period of the subject
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
-
-    flash(f"{t} deleted!")
+    flash("Period deleted!")
     return redirect("/schedule")
 
 
@@ -324,10 +323,10 @@ def delete_day():
     return redirect("/")
 
 
-@app.route("/add/subject", methods=["POST"])
+@app.route("/add/period", methods=["POST"])
 @login_required
-def setup():
-    """Add subject"""
+def add_period():
+    """Adds a period"""
     
     subject = request.form.get("subject")
     subject_type = request.form.get("type")
@@ -365,7 +364,7 @@ def setup():
                                             {"id": session["user_id"]}).fetchall()
         except:
             return apology("something went wrong with the database")
-    flash("Subject added!")
+    flash("Period added!")
     return redirect(f"/subjects/{subject}")
 
 @app.route("/notes")
@@ -441,66 +440,71 @@ def delete_notes():
     flash("All notes deleted!")
     return redirect("/")
 
-@app.route("/edit/subject/form")
-@login_required
-def edit_subject_form():
-    token = secrets.token_hex()
-    session["form_token"] = token
-    subject = request.args.get("subject")
-    subject_type = request.args.get("type")
-    lecturer = request.args.get("lecturer")
-    place = request.args.get("place")
-    start = request.args.get("start")
-    end = request.args.get("end")
-    day = request.args.get("day")
-    if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
-        return apology(message="please fill the form")
-    q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
-                      {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
-    if not q:
-        return apology("subject doesn't exist")
-    return render_template("edit_subject.html", subject=subject, type=subject_type, 
-                           lecturer=lecturer, place=place, start=start, end=end, day=day, token=token)
+# This and /edit/subject could be done inside the same function 
+#@app.route("/edit/subject/form")
+#@login_required
+#def edit_subject_form():
+    
 
-@app.route("/edit/subject", methods=["POST"])
+@app.route("/edit/period", methods=["GET", "POST"])
 @login_required
-def edit_subject():
+def edit_period():
     """Edit a subject"""
-
-    recieved_token = request.form.get("token")
-    if not recieved_token or recieved_token != session["form_token"]:
-        return apology("fuck off cross-site forgeing piece of shit")
-    subject = request.form.get("subject")
-    subject_type = request.form.get("type")
-    lecturer = request.form.get("lecturer")
-    place = request.form.get("place")
-    start = request.form.get("start")
-    end = request.form.get("end")
-    day = request.form.get("day")
-    old_subject = request.form.get("old_subject")
-    old_subject_type = request.form.get("old_type")
-    old_lecturer = request.form.get("old_lecturer")
-    old_place = request.form.get("old_place")
-    old_start = request.form.get("old_start")
-    old_end = request.form.get("old_end")
-    old_day = request.form.get("old_day")
-    if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
-        return apology("please fill the form")
-    subject = subject.title()
-    lecturer = lecturer.title()
-    place = place.title()
-    day = day.capitalize()
-    if not old_subject or not old_subject_type or not old_lecturer or not old_place or not old_start or not old_end or not old_day:
-        return apology("something went form") 
-    try:
-        db.execute("UPDATE subjects SET subject = :s, type = :t, lecturer = :l, place = :p, start_time = :st, end_time = :e, day = :d WHERE user_id = :id AND subject = :o_s AND type = :o_t AND lecturer = :o_l AND place = :o_p AND start_time = :o_st AND end_time = :o_e AND day = :o_d",
-                   {"s": subject, "t": subject_type, "p": place, "l": lecturer, "st": start, "e": end, "d": day, "id": session["user_id"],
-                   "o_s": old_subject, "o_t": old_subject_type, "o_p": old_place, "o_l": old_lecturer, "o_st": old_start, "o_e": old_end, "o_d": old_day})
-        db.commit()
-    except:
-        return apology("something went wrong")
-    flash("Subject edited!")
-    return redirect("/schedule")
+    if request.method == "POST":
+        #recieved_token = request.form.get("token")
+        #if not recieved_token or recieved_token != session["form_token"]:
+            #return apology("fuck off cross-site forgeing piece of shit")
+        subject = request.form.get("subject")
+        subject_type = request.form.get("type")
+        lecturer = request.form.get("lecturer")
+        place = request.form.get("place")
+        start = request.form.get("start")
+        end = request.form.get("end")
+        day = request.form.get("day")
+        old_subject = request.form.get("old_subject")
+        old_subject_type = request.form.get("old_type")
+        old_lecturer = request.form.get("old_lecturer")
+        old_place = request.form.get("old_place")
+        old_start = request.form.get("old_start")
+        old_end = request.form.get("old_end")
+        old_day = request.form.get("old_day")
+        if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
+            return apology("please fill the form")
+        subject = subject.title()
+        lecturer = lecturer.title()
+        place = place.title()
+        day = day.capitalize()
+        if not old_subject or not old_subject_type or not old_lecturer or not old_place or not old_start or not old_end or not old_day:
+            return apology("something went form") 
+        try:
+            db.execute("UPDATE subjects SET subject = :s, type = :t, lecturer = :l, place = :p, start_time = :st, end_time = :e, day = :d WHERE user_id = :id AND subject = :o_s AND type = :o_t AND lecturer = :o_l AND place = :o_p AND start_time = :o_st AND end_time = :o_e AND day = :o_d",
+                    {"s": subject, "t": subject_type, "p": place, "l": lecturer, "st": start, "e": end, "d": day, "id": session["user_id"],
+                    "o_s": old_subject, "o_t": old_subject_type, "o_p": old_place, "o_l": old_lecturer, "o_st": old_start, "o_e": old_end, "o_d": old_day})
+            db.commit()
+        except:
+            return apology("something went wrong")
+        session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                     {"id": session["user_id"]}).fetchall()
+        flash("Period edited!")
+        return redirect(f"/subjects/{subject}")
+    else:
+        #token = secrets.token_hex()
+        #session["form_token"] = token
+        subject = request.args.get("subject")
+        subject_type = request.args.get("type")
+        lecturer = request.args.get("lecturer")
+        place = request.args.get("place")
+        start = request.args.get("start")
+        end = request.args.get("end")
+        day = request.args.get("day")
+        if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
+            return apology(message="please fill the form")
+        q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
+                        {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
+        if not q:
+            return apology("subject doesn't exist")
+        return render_template("edit_period.html", subject=subject, type=subject_type, 
+                            lecturer=lecturer, place=place, start=start, end=end, day=day)
 @app.route("/ece/section/<n>", methods=["GET", "POST"])
 @login_required
 def sfe(n):

@@ -11,7 +11,7 @@ const assets = [
     '/static/styles.css',
     '/static/subject_time.js',
     '/static/due.js',
-    'static/logo.png',
+    '/static/logo.png',
     'https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'
 ];
 // TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
@@ -53,7 +53,7 @@ self.addEventListener("fetch", function (event) {
       // The following validates that the request was for a navigation to a new document
 
 
-      console.error("[PWA Builder] Network request Failed. Serving offline page ");
+      console.error("[PWA Builder] Network request Failed.");
       return caches.open(CACHE).then(function (cache) {
         return cache.match(event.request) || fetch(event.request);
       });

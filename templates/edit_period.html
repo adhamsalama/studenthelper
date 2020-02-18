@@ -1,17 +1,17 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Edit Subject
+Edit Period
 {% endblock %}
 
 {% block head %}
 <div class="jumbotron text-center">
-    <h1 class="display-4">Edit Subject</h1>
+    <h1 class="display-4">Edit Period</h1>
 </div>
 {% endblock %}
 
 {% block main %}
-<form class="needs-validation" id="f" novalidate action="/edit/subject" method="post">
+<form class="needs-validation" id="f" novalidate action="/edit/period" method="post">
     <div class="form-group mb-2">
         <label for="subject">Subject</label>
         <input autocomplete="off" autofocus class="form-control" value="{{ subject }}" id="subject" name="subject"
@@ -73,7 +73,7 @@ Edit Subject
     <input value="{{ start }}" name="old_start" type="hidden">
     <input value="{{ end }}" name="old_end" type="hidden">
     <input value="{{ day }}" name="old_day" type="hidden">
-    <button class="btn btn-primary mt-3 ml-auto darkmode-ignore" type="submit">Edit</button>
+    <button class="btn btn-primary mt-3 ml-auto darkmode-ignore" type="submit">Save</button>
 
 </form>
 {% endblock %}
