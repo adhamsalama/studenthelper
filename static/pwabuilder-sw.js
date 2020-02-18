@@ -8,7 +8,7 @@ const assets = [
     '/schedule',
     '/dues',
     '/notes',
-    'styles.css',
+    '/static/styles.css',
     '/static/subject_time.js',
     '/static/due.js',
     'static/logo.png',
