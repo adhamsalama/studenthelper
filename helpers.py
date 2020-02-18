@@ -1,5 +1,4 @@
 import requests
-import urllib.parse
 import smtplib
 from datetime import date
 from flask import redirect, render_template, request, session

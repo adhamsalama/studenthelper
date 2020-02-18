@@ -24,6 +24,14 @@
 
         </div>
         <button class="btn btn-primary darkmode-ignore" type="submit">Log In</button>
+        <input type="hidden" name="today_date" value="">
     </form>
-
+<script>
+    let d = new Date();
+    let today_date = (d.getMonth() + 1).toString() + '-' + d.getDate().toString() + '-' + d.getFullYear().toString();
+    document.querySelector("form").onsubmit = function () {
+        document.querySelector("input[name='today_date']").value = today_date;
+        return true;
+    }
+</script>
 {% endblock %}

@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from cachetools import TTLCache
 import time
-import datetime
+from datetime import *
 import secrets
 
 app = Flask(__name__)
@@ -37,6 +37,7 @@ db = scoped_session(sessionmaker(bind=engine))
 cache = TTLCache(maxsize=10, ttl=86400)
 cache["quote"] = quote_of_the_day()
 
+week_days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
 @app.route("/")
 @login_required
@@ -47,22 +48,40 @@ def index():
     except:
         cache["quote"] = quote_of_the_day()
         quote = cache["quote"]
-    day = time.strftime("%A")
-    days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    # day = days.index(day)
-    next_day = days[(days.index(day) + 1) % 7]
+
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
-                   {"id": session["user_id"], "day": day}).fetchall()
+                   {"id": session["user_id"], "day": session['today_name']}).fetchall()
     next_day_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next ORDER BY start_time",
-                         {"id": session["user_id"], "next": next_day}).fetchall()
+                         {"id": session["user_id"], "next": session['tomorrow_name']}).fetchall()
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
-    day += ", " + time.strftime("%b %d %Y")
-    today = time.strftime("%D")
-    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": today}).fetchall()
-    tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%D")
-    next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": tomorrow}).fetchall()
-    return render_template("index.html", subjects=q, next=next_day_subjects, next_day=next_day, day=day, dues=dues, next_day_dues=next_day_dues, quote=quote)
+    
+    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['today_date']}).fetchall()
+    
+    next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['tomorrow_date']}).fetchall()
+    return render_template("index.html", subjects=q, next=next_day_subjects, next_day=session['tomorrow_name'], day=session['today_name'], dues=dues, next_day_dues=next_day_dues, quote=quote)
+
+
+@app.route("/update_date", methods=["POST"])
+@login_required
+def update_date():
+    """Updates the date"""
+
+    if not request.form.get('today_date'):
+        return apology("Incorrect Date")
+    today_date = request.form.get('today_date')
+    today_date = today_date.split("-")
+    try:
+        today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
+    except:
+        return apology("incorrect Date")
+    session['today_name'] = today_date.strftime("%A")
+    session['tomorrow_name'] = week_days[(week_days.index(session['today_name']) + 1) % 7]
+    session['today_date'] = today_date.strftime("%D")
+    session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
+    session['full_date'] = session['today_name'] + ", " + today_date.strftime("%b %d %Y")
+
+    return redirect("/")
 
 
 @app.route("/profile")
@@ -214,6 +233,10 @@ def delete_subject():
     db.execute("DELETE FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND day = :d AND place = :p AND start_time = :st AND end_time = :e",
                {"id": session["user_id"], "s": s, "t": t, "l": l, "d": d, "p": p, "st": st, "e": e})
     db.commit()
+    # Update subjects in navbar because this might be the last period of the subject
+    session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                     {"id": session["user_id"]}).fetchall()
+
     flash(f"{t} deleted!")
     return redirect("/schedule")
 
@@ -774,6 +797,16 @@ def login():
         session["username"] = rows["username"]
         session["email"] = rows["email"]
         session["uni"] = rows["university"]
+
+        # Setup the dates
+        today_date = request.form.get('today_date')
+        today_date = today_date.split("-")
+        today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
+        session['today_name'] = today_date.strftime("%A")
+        session['tomorrow_name'] = week_days[(week_days.index(session['today_name']) + 1) % 7]
+        session['today_date'] = today_date.strftime("%D")
+        session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
+        session['full_date'] = session['today_name'] + ", " + today_date.strftime("%b %d %Y")
 
         # Redirect user to home page
         return redirect("/")
