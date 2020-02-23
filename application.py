@@ -210,7 +210,6 @@ def send_js():
     return current_app.send_static_file('pwabuilder-sw.js')
 
     
-#Should be delete/period for more clarity
 @app.route("/delete/period", methods=["POST"])
 @login_required
 def delete_period():
@@ -439,11 +438,6 @@ def delete_notes():
     db.commit()
     flash("All notes deleted!")
     return redirect("/")
-
-# This and /edit/subject could be done inside the same function 
-#@app.route("/edit/subject/form")
-#@login_required
-#def edit_subject_form():
     
 
 @app.route("/edit/period", methods=["GET", "POST"])
