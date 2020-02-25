@@ -244,8 +244,9 @@ def delete_period():
         session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                         {"id": session["user_id"]}).fetchall()
         # Delete the subject's dues
-        db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s",
-                   {"id": session["user_id"], "s": s})
+        db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": s})
+        # Delete the subjetc's notes
+        db.execute("DELETE FROM notes WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": s})
         db.commit()
     flash("Period deleted!")
     return redirect("/schedule")
