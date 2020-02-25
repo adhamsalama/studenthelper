@@ -200,6 +200,9 @@ def delete_subject():
         db.commit()
     except:
         return apology("somethign went wrong")
+    # Update the session['subjects']
+    session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                     {"id": session["user_id"]}).fetchall()
     flash("Subject deleted!")
     return redirect("/")
 
@@ -224,7 +227,7 @@ def delete_period():
     st = request.form.get("start")
     e = request.form.get("end")
     if not s or not t or not l or not d or not p or not st or not e:
-        return apology("something unsual happened")
+        return apology("something unusual happened")
     q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND day = :d AND place = :p AND start_time = :st AND end_time = :e",
                    {"id": session["user_id"], "s": s, "t": t, "l": l, "d": d, "p": p, "st": st, "e": e}).fetchall()
     if not q:
@@ -233,9 +236,17 @@ def delete_period():
     db.execute("DELETE FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND day = :d AND place = :p AND start_time = :st AND end_time = :e",
                {"id": session["user_id"], "s": s, "t": t, "l": l, "d": d, "p": p, "st": st, "e": e})
     db.commit()
-    # Update subjects in navbar because this might be the last period of the subject
-    session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                     {"id": session["user_id"]}).fetchall()
+
+    # Update session['subjects'] (used in navbar and filling forms) because this might be the last period of the subject (which deletes it entirely)
+    subject_count = db.execute("SELECT COUNT(subject) FROM subjects WHERE user_id = :id AND subject = :s", {"id": session["user_id"], 's': s}).fetchone()[0]    
+    print(subject_count)
+    if subject_count == 0:
+        session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                        {"id": session["user_id"]}).fetchall()
+        # Delete the subject's dues
+        db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s",
+                   {"id": session["user_id"], "s": s})
+        db.commit()
     flash("Period deleted!")
     return redirect("/schedule")
 
@@ -546,9 +557,7 @@ def dues():
     """Display dues for user"""
 
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id ORDER BY deadline", {"id": session["user_id"]}).fetchall()
-    subjects = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                     {"id": session["user_id"]}).fetchall()
-    return render_template("dues.html", dues=dues, subjects=subjects)
+    return render_template("dues.html", dues=dues)
 
 
 @app.route("/add/due", methods=["POST"])
@@ -589,16 +598,17 @@ def delete_due():
 
     subject = request.form.get("subject")
     required = request.form.get("required")
+    type_ = request.form.get("type")
     deadline = request.form.get("deadline")
-    if not subject or not required or not deadline:
+    if not subject or not type_ or not deadline:
         return apology("something went wrong")
-    q = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject = :s AND required = :r AND deadline = :d",
-                   {"id": session["user_id"], "s": subject, "r": required, "d": deadline}).fetchone()
+    q = db.execute("SELECT * FROM dues WHERE user_id = :id AND subject = :s AND type = :t AND required = :r AND deadline = :d",
+                   {"id": session["user_id"], "s": subject, 't': type_, "r": required, "d": deadline}).fetchone()
     if not q:
         return apology("due doesn't exist")
     try:
-        db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s AND required = :r AND deadline = :d",
-                   {"id": session["user_id"], "s": subject, "r": required, "d": deadline})
+        db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s AND type = :t AND required = :r AND deadline = :d",
+                   {"id": session["user_id"], "s": subject, "t": type_, "r": required, "d": deadline})
         db.commit()
     except:
         return apology("something went wrong with the database")
