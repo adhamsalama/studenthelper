@@ -24,7 +24,7 @@ def after_request(response):
 
 
 # Configure session to use filesystem
-#app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
@@ -49,17 +49,18 @@ def index():
         cache["quote"] = quote_of_the_day()
         quote = cache["quote"]
 
-    q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
+    today_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
                    {"id": session["user_id"], "day": session['today_name']}).fetchall()
-    next_day_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next ORDER BY start_time",
+    tomorrow_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next ORDER BY start_time",
                          {"id": session["user_id"], "next": session['tomorrow_name']}).fetchall()
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
-    
-    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['today_date']}).fetchall()
-    
-    next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['tomorrow_date']}).fetchall()
-    return render_template("index.html", subjects=q, next=next_day_subjects, next_day=session['tomorrow_name'], day=session['today_name'], dues=dues, next_day_dues=next_day_dues, quote=quote)
+    week = session['today_date_object']  + timedelta(days=7)
+    #dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['today_date']}).fetchall()
+    #next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['tomorrow_date']}).fetchall()
+    # Getting this week's dues
+    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline <= :w AND deadline >= :d", {"id": session["user_id"], 'w': week, "d": session['today_date']}).fetchall()
+    return render_template("index.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, next_day=session['tomorrow_name'], day=session['today_name'], dues=dues, quote=quote)
 
 
 @app.route("/update_date", methods=["POST"])
@@ -559,7 +560,7 @@ def add_due():
     s_type = request.form.get("type")
     required = request.form.get("required")
     deadline = request.form.get("deadline")
-    if not subject or not s_type or not required or not deadline:
+    if not subject or not s_type or not deadline:
         return apology("something went wrong")
     subject = subject.title()
     subjects = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
@@ -800,6 +801,7 @@ def login():
         today_date = request.form.get('today_date')
         today_date = today_date.split("-")
         today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
+        session['today_date_object'] = today_date
         session['today_name'] = today_date.strftime("%A")
         session['tomorrow_name'] = week_days[(week_days.index(session['today_name']) + 1) % 7]
         session['today_date'] = today_date.strftime("%D")
