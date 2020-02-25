@@ -28,7 +28,7 @@
                     <div class="form-group mb-2">
                         <select class="custom-select form-control" name="subject" required>
                             <option value="" disabled selected>Subject</option>
-                            {% for subject in subjects %}
+                            {% for subject in session['subjects'] %}
                                 <option value="{{ subject[0] }}">{{ subject[0] }}</option>
                             {% endfor %}
                         </select>
@@ -102,6 +102,7 @@
                     <td>
                         <form action="/delete/due" onsubmit=" return verify();" method="post">
                             <input type="hidden" name="subject" value="{{ due['subject'] }}">
+                            <input type="hidden" name="type" value="{{ due['type'] }}">
                             <input type="hidden" name= "required" value="{{ due['required'] }}">
                             <input type="hidden" name="deadline" value="{{ due['deadline'] }}">
                             <button class="btn btn-danger darkmode-ignore" type="submit">Delete</button>
