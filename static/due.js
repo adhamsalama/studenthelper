@@ -7,7 +7,7 @@ let dates = document.querySelectorAll(".time-left");
 for (let i = 0; i < deadlines.length; i++) {
     let d2 = new Date(deadlines[i].innerHTML);
     let diffTime = d2 - d1;
-    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    let diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
     if (diffDays == 0) {
         dates[i].innerHTML = "Today";
     }
