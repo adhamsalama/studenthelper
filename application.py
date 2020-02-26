@@ -60,7 +60,7 @@ def index():
     #next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['tomorrow_date']}).fetchall()
     # Getting this week's dues
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline <= :w AND deadline >= :d ORDER BY deadline", {"id": session["user_id"], 'w': week, "d": session['today_date']}).fetchall()
-    return render_template("index.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, next_day=session['tomorrow_name'], day=session['today_name'], dues=dues, quote=quote)
+    return render_template("index.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, dues=dues, quote=quote)
 
 
 @app.route("/update_date", methods=["POST"])
