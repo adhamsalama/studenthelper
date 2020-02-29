@@ -357,10 +357,10 @@ def add_period():
         return apology("maximum lecturer or place length is 50 characters")
     # days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     # day = days.index(day)
-    subject = subject.rstrip().title()
+    subject = subject.strip().title()
     subject_type = subject_type.capitalize()
-    lecturer = lecturer.rstrip().title()
-    place = place.rstrip().title()
+    lecturer = lecturer.strip().title()
+    place = place.strip().title()
     if subject_type not in ["Lab", "Lecture", "Section"]:
         return apology("invalid subject type")
     for day in days:
@@ -460,7 +460,9 @@ def rename_subject():
     if not old_name or not new_name:
         return apology("something went wrong")
     try:
-        new_name = new_name.title()
+        new_name = new_name.strip().title()
+        if len(new_name) < 2:
+            return apology("Nnew name must be more than 1 character long")
         db.execute("UPDATE subjects SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
         db.execute("UPDATE dues SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
         db.execute("UPDATE notes SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
@@ -654,7 +656,7 @@ def delete_dues():
 def search():
     """Search for user input"""
 
-    q = request.args.get("q").rstrip()
+    q = request.args.get("q").strip()
     if not q:
         return apology(message="please enter a name to search")
     try:
