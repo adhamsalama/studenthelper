@@ -467,6 +467,7 @@ def rename_subject():
         db.execute("UPDATE dues SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
         db.execute("UPDATE notes SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
         db.commit()
+        session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject", {"id": session["user_id"]}).fetchall()
         flash("Subject name updated!")
         return redirect(f"/subjects/{new_name.replace(' ', '_')}")
     except:
