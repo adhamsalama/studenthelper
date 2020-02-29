@@ -35,8 +35,6 @@ self.addEventListener("fetch", function (event) {
   event.respondWith(
     fetch(event.request).catch(function (error) {
       // The following validates that the request was for a navigation to a new document
-
-
       console.error("[PWA Builder] Network request Failed.");
       return caches.open(CACHE).then(function (cache) {
         return cache.match(event.request);
