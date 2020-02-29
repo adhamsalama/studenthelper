@@ -130,6 +130,11 @@
                 </div>
             </div>
         </div>
+        <form action="/rename_subject" class="mb-2" method="post" id="rename_subject">
+            <input type="hidden" name="old_name" value="{{ subject }}">
+            <input type="hidden" name="new_name" value="">
+            <button class="btn btn-primary darkmode-ignore" type="submit">Rename Subject</button>
+        </form>
         <form action="/delete/subject" method="post" id="delete_subject">
             <input type="hidden" name="subject" value="{{ subject }}">
             <button class="btn btn-danger darkmode-ignore" type="submit">Delete Subject</button>
@@ -223,6 +228,7 @@
                 <td>
                     <form action="/delete/due" onsubmit=" return verify_due();" method="post">
                         <input type="hidden" name="subject" value="{{ due['subject'] }}">
+                        <input type="hidden" name="type" value="{{ due['type'] }}">
                         <input type="hidden" name="required" value="{{ due['required'] }}">
                         <input type="hidden" name="deadline" value="{{ due['deadline'] }}">
                         <button class="btn btn-danger darkmode-ignore" type="submit">Delete</button>
@@ -275,6 +281,14 @@
     }
     function verify() {
         return confirm("Are you sure you want to delete this period?");
+    }
+    document.querySelector("#rename_subject").onsubmit = function () {
+        let new_name = prompt("Enter the subject's new name", document.querySelector("input[name='old_name']").value);
+        if (new_name != "" && new_name != " " && new_name != null && new_name.length >= 2){
+            document.querySelector("input[name='new_name']").value = new_name;
+            return true;
+        }
+        return false;
     }
 </script>
 {% endblock %}

@@ -452,6 +452,24 @@ def delete_notes():
     flash("All notes deleted!")
     return redirect("/")
     
+@app.route("/rename_subject", methods=["POST"])
+@login_required
+def rename_subject():
+    old_name = request.form.get("old_name")
+    new_name = request.form.get("new_name")
+    if not old_name or not new_name:
+        return apology("something went wrong")
+    try:
+        new_name = new_name.title()
+        db.execute("UPDATE subjects SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
+        db.execute("UPDATE dues SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
+        db.execute("UPDATE notes SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
+        db.commit()
+        flash("Subject name updated!")
+        return redirect(f"/subjects/{new_name.replace(' ', '_')}")
+    except:
+        return apology("something went wrong", 403)
+
 
 @app.route("/edit/period", methods=["GET", "POST"])
 @login_required
