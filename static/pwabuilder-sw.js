@@ -39,7 +39,7 @@ self.addEventListener("fetch", function (event) {
 
       console.error("[PWA Builder] Network request Failed.");
       return caches.open(CACHE).then(function (cache) {
-        return cache.match(event.request) || fetch(event.request);
+        return cache.match(event.request);
       });
     })
   );
