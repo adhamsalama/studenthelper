@@ -393,10 +393,10 @@ def add_note():
     if not subject or not note:
         return apology("please fill the form")
     try:
-        db.execute("INSERT INTO notes (user_id, subject, note) VALUES(:id, :s, :n)", {"id": session["user_id"], "s": subject, "n": note})
+        db.execute("INSERT INTO notes (user_id, subject, note, date) VALUES(:id, :s, :n, :d)", {"id": session["user_id"], "s": subject, "n": note, "d": session["today_date"]})
         db.commit()
-    except Exception as x:
-        return apology(x)
+    except:
+        return apology("something went wrong")
     flash("Note added!")
     return redirect("/notes")
 
