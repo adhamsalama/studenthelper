@@ -35,14 +35,21 @@ Register
         <div class="invalid-feedback">Please confirm your password</div>
     </div>
     <button class="btn btn-primary darkmode-ignore" type="submit">Register</button>
+    <input type="hidden" name="today_date" value="">
 </form>
 <div class="alert alert-info my-5" role="alert">
         Username mustn't contain spaces or symbols except for _
         <br>
         Password must be longer than 6 characters and contain upper and lower case letters and and/or numbers and/or symbols.
       </div>
-<script src="/static/register.js">
+<script src="/static/register.js"></script>
+<script>
+    let d = new Date();
+    let today_date = (d.getMonth() + 1).toString() + '-' + d.getDate().toString() + '-' + d.getFullYear().toString();
+    document.querySelector("form").onsubmit = function () {
+        document.querySelector("input[name='today_date']").value = today_date;
+        return true;
+    }
 </script>
-
 
 {% endblock %}

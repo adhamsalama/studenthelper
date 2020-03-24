@@ -923,7 +923,7 @@ def register():
             send_email(email, username, "Registeration for Student Helper", "Congratulations!\n You're now registered on Student Helper!")
         except Exception as x:
             print(x)
-    rows = db.execute("SELECT id, username, email FROM users WHERE username = :username", {"username": username}).fetchone()
+    rows = db.execute("SELECT id, username, email, university FROM users WHERE username = :username", {"username": username}).fetchone()
     session["user_id"] = rows["id"]
     session["username"] = rows["username"]
     session["email"] = rows["email"]
