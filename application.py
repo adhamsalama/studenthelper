@@ -56,8 +56,6 @@ def index():
     session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
     week = session['today_date_object']  + timedelta(days=7)
-    #dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['today_date']}).fetchall()
-    #next_day_dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline = :d", {"id": session["user_id"], "d": session['tomorrow_date']}).fetchall()
     # Getting this week's dues
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline <= :w AND deadline >= :d ORDER BY deadline", {"id": session["user_id"], 'w': week, "d": session['today_date']}).fetchall()
     return render_template("index.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, dues=dues, quote=quote)
@@ -831,6 +829,8 @@ def login():
 
         # Setup the dates
         today_date = request.form.get('today_date')
+        if not today_date:
+            return apology('please enable javascript')
         today_date = today_date.split("-")
         today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
         session['today_date_object'] = today_date
@@ -929,6 +929,19 @@ def register():
     session["email"] = rows["email"]
     session["uni"] = rows["university"]
     flash("You're now registered!")
+
+    # Setup the dates
+    today_date = request.form.get('today_date')
+    if not today_date:
+        return apology('please enable javascript your account has been registered')
+    today_date = today_date.split("-")
+    today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
+    session['today_date_object'] = today_date
+    session['today_name'] = today_date.strftime("%A")
+    session['tomorrow_name'] = week_days[(week_days.index(session['today_name']) + 1) % 7]
+    session['today_date'] = today_date.strftime("%D")
+    session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
+    session['full_date'] = session['today_name'] + ", " + today_date.strftime("%b %d %Y")
     return redirect("/")
 
 
