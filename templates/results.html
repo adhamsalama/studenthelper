@@ -97,7 +97,7 @@ Results
         <h5 class="card-title">
             {{ note["date"] }}
         </h5>
-        {{ note["note"] }}
+        {{ note["note"]|clean_markdown|safe }}
     </div>
 </div>
 {% endfor %}
