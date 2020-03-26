@@ -9,7 +9,7 @@ Schedule
     <div class="container">
         <h1 class="display-4">Schedule</h1>
         <p class="lead">Number of periods: {{ counter }}</p>
-        <button type="button" class="btn btn-primary darkmode-ignore mb-2" data-toggle="modal" data-target="#add">
+        <button type="button" class="btn btn-info  mb-2" data-toggle="modal" data-target="#add">
             Add Period
         </button>
         <!-- Modal -->
@@ -110,7 +110,7 @@ Schedule
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary ml-auto darkmode-ignore w-100 text-center" type="submit">Add</button>
+                        <button class="btn btn-info ml-auto  w-100 text-center" type="submit">Add</button>
                         </form>
                     </div>
                 </div>
@@ -118,7 +118,7 @@ Schedule
         </div>
         {% if counter > 0 %}
         <form action="/delete/all_subjects" method="post" class="needs-validation" id="delete_all" novalidate>
-            <button class="btn btn-danger darkmode-ignore" type="submit">Delete All</button>
+            <button class="btn btn-danger " type="submit">Delete All</button>
         </form>
         {% endif %}
     </div>
@@ -126,7 +126,7 @@ Schedule
 {% endblock %}
 {% block main %}
 {% if counter > 0 %}
-<div class="table-responsive darkmode-ignore">
+<div class="table-responsive ">
     <table class="table table-dark table-striped table-hover">
         <thead>
             <tr>
@@ -135,8 +135,8 @@ Schedule
                 <th scope="col">Type</th>
                 <th scope="col">Lecturer</th>
                 <th scope="col">Place</th>
-                <th scope="col">Start Time</th>
-                <th scope="col">End Time</th>
+                <th scope="col">Starts</th>
+                <th scope="col">Ends</th>
                 <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
             </tr>
@@ -161,7 +161,7 @@ Schedule
                         <input type="hidden" name="place" value="{{ subject['place'] }}">
                         <input type="hidden" name="start" value="{{ subject['start_time'] }}">
                         <input type="hidden" name="end" value="{{ subject['end_time'] }}">
-                        <button class="btn btn-primary darkmode-ignore" type="submit">Edit</button>
+                        <button class="btn btn-info " type="submit">Edit</button>
                     </form>
                 </td>
                 <td>
@@ -173,7 +173,7 @@ Schedule
                         <input type="hidden" name="place" value="{{ subject['place'] }}">
                         <input type="hidden" name="start" value="{{ subject['start_time'] }}">
                         <input type="hidden" name="end" value="{{ subject['end_time'] }}">
-                        <button class="btn btn-danger darkmode-ignore" type="submit">Delete</button>
+                        <button class="btn btn-danger " type="submit">Delete</button>
                     </form>
                 </td>
             </tr>
@@ -183,7 +183,7 @@ Schedule
     </table>
 </div>
 {% else %}
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     <h4 class="alert-heading">You don't have any subjects!</h4>
 </div>
 {% endif %}

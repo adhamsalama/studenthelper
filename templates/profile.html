@@ -12,7 +12,7 @@
             {% if session["email"] %}
                 {{ session["email"] }}
             {% else %}
-                <a href="/settings/add_email" class="btn btn-primary darkmode-ignore">Add Email</a>
+                <a href="/settings/add_email" class="btn btn-info ">Add Email</a>
             {% endif %}
             <br>
             University:
@@ -24,7 +24,7 @@
                     <input type="text" autofocus class="form-control" id="university" placeholder="University" name="university" style="display: inline-block !important; width: auto;" required>
                         <div class="invalid-feedback">Please enter your university</div>
                     </div>
-                    <button class="btn btn-primary darkmode-ignore" type="submit">Add University</button>
+                    <button class="btn btn-info " type="submit">Add University</button>
 
                 </form>
 
@@ -34,7 +34,7 @@
         </p>
         <form action="/update_date" method="post" id="update_date">
             <input type="hidden" name="today_date" value="">
-            <button type="submit" class="btn btn-primary darkmode-ignore">
+            <button type="submit" class="btn btn-info ">
                 Update Today's Date
             </button>
         </form>
@@ -42,40 +42,40 @@
 </div>
 {% endblock %}
 {% block main %}
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     Number of days: <span class="badge badge-light">{{ 7 - days_off }}</span>
 </div>
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     Number of days off: <span class="badge badge-light">{{ days_off }}</span>
 </div>
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     Number of Subjects: <span class="badge badge-light">{{ subjects }}</span>
 </div>
 <a href="/type/Lecture">
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     Number of Lectures: <span class="badge badge-light">{{ lectures }}</span>
 </div>
 </a>
 <a href="/type/Section">
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     Number of Sections: <span class="badge badge-light">{{ sections }}</span>
 </div>
 </a>
 <a href="/type/Lab">
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     Number of Labs: <span class="badge badge-light">{{ labs }}</span>
 </div>
 </a>
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     Total number of periods: <span class="badge badge-light">{{ total }}</span>
 </div>
 <ul class="list-group">
     {% for day, count in days.items() %}
     {% if count %}
-    <a href="/days/{{ day }}" class="link">
+    <a href="/days/{{ day }}" class="link" style="border-bottom: 2px solid black;">
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <span class="day">{{ day }}</span>
-            <span class="badge badge-primary badge-pill">{{ count }}</span>
+            <span class="badge badge-info badge-pill">{{ count }}</span>
         </li>
     </a>
     {% endif %}

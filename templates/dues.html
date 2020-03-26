@@ -10,7 +10,7 @@
         <h1 class="display-4">Dues.</h1>
         <h5 class="lead">Number of dues: {{ dues|length }}
         </h5>
-                <button type="button" class="btn btn-primary darkmode-ignore mb-2" data-toggle="modal" data-target="#add">
+                <button type="button" class="btn btn-info  mb-2" data-toggle="modal" data-target="#add">
             Add Due
         </button>
         <!-- Modal -->
@@ -58,7 +58,7 @@
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary ml-auto darkmode-ignore w-100 text-center" type="submit">Add</button>
+                <button class="btn btn-info ml-auto  w-100 text-center" type="submit">Add</button>
                 </form>
             </div>
         </div>
@@ -66,25 +66,25 @@
 </div>
 
         <form action="/delete/dues" method="post" id="delete_dues">
-            <button class="btn btn-danger darkmode-ignore m-2 " type="submit">Delete Dues</button>
+            <button class="btn btn-danger  m-2 " type="submit">Delete Dues</button>
         </form>
     </div>
 </div>
 {% endblock %}
 {% block main %}
 {% if not dues %}
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-info" role="alert">
     Woohoo! You don't have any dues!
 </div>
 {% else %}
 
-<div class="table-responsive darkmode-ignore">
+<div class="table-responsive ">
     <table class="table table-dark table-striped table-hover">
        <thead>
                 <tr>
                     <th scope="col">Subject</th>
                     <th scope="col">Type</th>
-                    <th scope="col">Required</th>
+                    <th scope="col">TODO</th>
                     <th scope="col">Deadline</th>
                     <th scope="col">Due</th>
                     <th scope="col">Delete</th>
@@ -104,7 +104,7 @@
                             <input type="hidden" name="type" value="{{ due['type'] }}">
                             <input type="hidden" name= "required" value="{{ due['required'] }}">
                             <input type="hidden" name="deadline" value="{{ due['deadline'] }}">
-                            <button class="btn btn-danger darkmode-ignore" type="submit">Delete</button>
+                            <button class="btn btn-danger " type="submit">Delete</button>
                         </form>
                     </td>
                 </tr>

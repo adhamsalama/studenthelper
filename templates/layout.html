@@ -7,7 +7,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/superhero_bootstrap.min.css" rel="stylesheet">
     <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet">
@@ -23,10 +23,10 @@
 <body>
 
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info">
         <a class="navbar-brand" href="/">
-            <img src="/static/logo.png" width="30" height="30" alt="">
-            Student Helper
+            <img src="/static/logo.png" width="60" height="60" alt="logo">
+            <span style="font-size: medium;">Student Helper</span>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
             <form class="form-inline my-2 my-lg-0" action="/search" method="get">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search Subjects/Dues/Notes" aria-label="Search" name="q"
                     required>
-                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+                <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
             </form>
             {% else %}
             <ul class="navbar-nav ml-auto">
@@ -92,7 +92,7 @@
     </nav>
     {% if get_flashed_messages() %}
     <header>
-        <div class="alert alert-primary border text-center" role="alert">
+        <div class="alert alert-info border text-center" role="alert">
             {{ get_flashed_messages() | join(" ") }}
         </div>
     </header>
@@ -113,19 +113,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script src="/static/validation.js"></script>
     <!-- Darkmode addon https://darkmodejs.learn.uno/ -->
-    <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.3.4/lib/darkmode-js.min.js"></script>
+    
     <script src="/static/subject_time.js"></script>
 
-    <script>
-        var options = {
-
-            label: '🌓', // default: ''
-        }
-
-        const darkmode = new Darkmode(options);
-        darkmode.showWidget();
-
-
-    </script>
-
+    </body>
 </html>

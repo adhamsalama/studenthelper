@@ -14,7 +14,7 @@ Home
         <br>
         Number of dues this week: {{ dues|length }}
     </p>
-    <button type="button" class="btn btn-primary darkmode-ignore" data-toggle="modal" data-target="#add">
+    <button type="button" class="btn btn-info " data-toggle="modal" data-target="#add">
         Add Period
     </button>
     <!-- Modal -->
@@ -122,7 +122,7 @@ Home
                         </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary ml-auto darkmode-ignore w-100 text-center" type="submit">Add</button>
+                    <button class="btn btn-info ml-auto  w-100 text-center" type="submit">Add</button>
                     </form>
                 </div>
             </div>
@@ -134,9 +134,9 @@ Home
                 style="display: inline-block !important; width: auto;" required>
         </div>
         <button type="submit" formaction="https://www.google.com/search?"
-            class="btn btn-primary darkmode-ignore">Google</button>
+            class="btn btn-info ">Google</button>
         <button type="submit" formaction="https://www.youtube.com/results?"
-            class="btn btn-danger darkmode-ignore">Youtube</button>
+            class="btn btn-danger ">Youtube</button>
     </form>
 </div>
 
@@ -144,7 +144,7 @@ Home
 {% block main %}
 
 {% if subjects %}
-<div class="table-responsive darkmode-ignore">
+<div class="table-responsive ">
     <table class="table table-dark table-striped table-hover">
         <caption>Today's Periods</caption>
         <thead>
@@ -154,8 +154,8 @@ Home
                 <th scope="col">Lecturer</th>
                 <!--    <th scope="col">Day</th> -->
                 <th scope="col">Place</th>
-                <th scope="col">Start Time</th>
-                <th scope="col">End Time</th>
+                <th scope="col">Starts</th>
+                <th scope="col">Ends</th>
                 <!-- <th scope="col">Delete</th> -->
             </tr>
         </thead>
@@ -181,7 +181,7 @@ Home
                         <input type="hidden" name="place" value="{{ subject['place'] }}">
                         <input type="hidden" name="start" value="{{ subject['start_time'] }}">
                         <input type="hidden" name="end" value="{{ subject['end_time'] }}">
-                        <button class="btn btn-primary" type="submit">Delete</button>
+                        <button class="btn btn-info" type="submit">Delete</button>
                     </form>
                 </td> -->
             </tr>
@@ -190,13 +190,13 @@ Home
     </table>
 </div>
 {% else %}
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-success" role="alert">
     <h4 class="alert-heading">You're free!</h4>
     <p>You don't have any periods today.</p>
 </div>
 {% endif %}
 {% if tomorrow_subjects %}
-<div class="table-responsive darkmode-ignore">
+<div class="table-responsive ">
     <table class="table table-dark table-striped table-hover">
         <caption>Tomorrow's Periods</caption>
         <thead>
@@ -205,8 +205,8 @@ Home
                 <th scope="col">Type</th>
                 <th scope="col">Lecturer</th>
                 <th scope="col">Place</th>
-                <th scope="col">Start Time</th>
-                <th scope="col">End Time</th>
+                <th scope="col">Starts</th>
+                <th scope="col">Ends</th>
             </tr>
         </thead>
         <tbody>
@@ -228,24 +228,24 @@ Home
     </table>
 </div>
 {% else %}
-<div class="alert alert-primary" role="alert">
-    Woohoo! You don't have any subjects tomorrow!
+<div class="alert alert-success" role="alert">
+    Woohoo! You don't have any periods tomorrow!
 </div>
 {% endif %}
 {% if not dues %}
-<div class="alert alert-primary" role="alert">
+<div class="alert alert-success" role="alert">
     Woohoo! No dues this week!
 </div>
 {% else %}
 
-<div class="table-responsive darkmode-ignore">
+<div class="table-responsive">
     <table class="table table-dark table-striped table-hover">
         <caption>This Week's Dues</caption>
         <thead>
             <tr>
                 <th scope="col">Subject</th>
                 <th scope="col">Type</th>
-                <th scope="col">Required</th>
+                <th scope="col">TODO</th>
                 <th scope="col">Deadline</th>
                 <th scope="col">Due</th>
             </tr>
@@ -266,7 +266,7 @@ Home
 {% endif %}
 
 <hr>
-<div class="alert alert-primary" id="weather" style="display: none" role="alert">
+<div class="alert alert-info" id="weather" style="display: none" role="alert">
 </div>
 {% if quote %}
 <div class="card text-center" id="header">
