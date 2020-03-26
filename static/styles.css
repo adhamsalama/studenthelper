@@ -81,6 +81,7 @@ a:hover, a:visited, a:link, a:active
 
 td a {
     display: block;
+    text-decoration: none !important;
 }
 .index {
    display: block;
