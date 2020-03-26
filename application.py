@@ -8,8 +8,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from cachetools import TTLCache
 import time
+import bleach
 from datetime import *
-import secrets
+from markdown import markdown
+
 
 app = Flask(__name__)
 
@@ -38,6 +40,14 @@ cache = TTLCache(maxsize=10, ttl=86400)
 cache["quote"] = quote_of_the_day()
 
 week_days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
+def clean_markdown(note):
+    """Cleans notes and converts them to markdown"""
+    
+    return markdown(bleach.clean(note))
+
+
+app.jinja_env.filters['clean_markdown'] = clean_markdown
 
 @app.route("/")
 @login_required
