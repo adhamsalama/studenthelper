@@ -1,3 +1,4 @@
+import os
 import requests
 import smtplib
 from datetime import date
@@ -38,8 +39,8 @@ def send_email(email, name, subject, message):
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.ehlo()
     server.starttls()
-    server.login("the.student.helper.11@gmail.com", "!7jwO2Efw5ViPTSMXEWo3$!k9N7qv^C")
-    server.sendmail("the.student.helper.11@gmail.com", email, f"To: {email}\nSubject: {subject}\nHello {name},\n {message}")
+    server.login(os.getenv("email"), os.getenv("password"))
+    server.sendmail(os.getenv("email"), email, f"To: {email}\nSubject: {subject}\nHello {name},\n {message}")
     server.quit()
 
 def get_time():
