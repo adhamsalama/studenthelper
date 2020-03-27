@@ -9,6 +9,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from cachetools import TTLCache
 import time
 import bleach
+import os
 from datetime import *
 from markdown import markdown
 
@@ -31,8 +32,12 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
+# Check for environment variable
+if not os.getenv("DATABASE_URL"):
+    raise RuntimeError("DATABASE_URL is not set")
+
 # Set up database
-engine = create_engine("postgres://grqmmiufuzsfza:a13a64718d2c4d935697f2e615b6f06433646079629bf670c3e285bc2d35d8a2@ec2-54-204-37-92.compute-1.amazonaws.com:5432/d6vhlm4n2rs2f4")
+engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
