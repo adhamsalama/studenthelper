@@ -82,7 +82,7 @@ def update_date():
     """Updates the date"""
 
     if not request.form.get('today_date'):
-        return apology("Incorrect Date")
+        return apology("something went wrong")
     today_date = request.form.get('today_date')
     today_date = today_date.split("-")
     try:
@@ -845,9 +845,10 @@ def login():
         # Setup the dates
         today_date = request.form.get('today_date')
         if not today_date:
-            return apology('please enable javascript')
-        today_date = today_date.split("-")
-        today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
+            today_date = datetime.today()
+        else:
+            today_date = today_date.split("-")
+            today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
         session['today_date_object'] = today_date
         session['today_name'] = today_date.strftime("%A")
         session['tomorrow_name'] = week_days[(week_days.index(session['today_name']) + 1) % 7]
