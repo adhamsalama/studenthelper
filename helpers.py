@@ -4,6 +4,8 @@ import smtplib
 from datetime import date
 from flask import redirect, render_template, request, session
 from functools import wraps
+import bleach
+from markdown import markdown
 
 
 def apology(message, code=400):
@@ -62,3 +64,10 @@ def quote_of_the_day():
         }
     except (KeyError, TypeError, ValueError):
         return None
+
+
+def clean_markdown(note):
+    """Cleans notes and converts them to markdown"""
+    
+    return markdown(bleach.clean(note))
+    

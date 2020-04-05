@@ -3,9 +3,9 @@ from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology
-from datetime import *
 import bleach
 from markdown import markdown
+from helpers import clean_markdown
 
 from auth.routes import auth
 from settings.routes import settings
@@ -38,12 +38,6 @@ app.register_blueprint(periods)
 app.register_blueprint(dues)
 app.register_blueprint(notes)
 app.register_blueprint(others)
-
-
-def clean_markdown(note):
-    """Cleans notes and converts them to markdown"""
-    
-    return markdown(bleach.clean(note))
 
 
 app.jinja_env.filters['clean_markdown'] = clean_markdown
