@@ -45,9 +45,6 @@ def send_email(email, name, subject, message):
     server.sendmail(os.getenv("email"), email, f"To: {email}\nSubject: {subject}\nHello {name},\n {message}")
     server.quit()
 
-def get_time():
-    """Get time"""
-    return str(date.today())
 
 def quote_of_the_day():
     """ Get motivational quote of the day """
