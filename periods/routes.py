@@ -1,17 +1,10 @@
-from flask import Flask, flash, json, jsonify, redirect, render_template, request, session, Blueprint
+from flask import flash, redirect, render_template, request, session, Blueprint
 from flask_session import Session
-from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
-from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from cachetools import TTLCache
-import time
-import bleach
 import os
-from datetime import *
-from markdown import markdown
 
 
 periods = Blueprint('periods', __name__)

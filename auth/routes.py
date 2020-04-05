@@ -1,4 +1,4 @@
-from flask import Flask, flash, json, jsonify, redirect, render_template, request, session, Blueprint
+from flask import flash, json, jsonify, redirect, render_template, request, session, Blueprint
 from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
