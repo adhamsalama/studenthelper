@@ -8,7 +8,7 @@ Home
 <div class="jumbotron text-center">
     <h1 class="display-4">Welcome, {{ session["username"] }}!</h1>
     <p class="lead">
-        Today is {{ session['full_date'] }}.
+        Today is {{ session['today_date_object']|format_date }}.
         <br>
         Number of periods today: {{ subjects|length }}
         <br>

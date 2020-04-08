@@ -2,7 +2,7 @@ from flask import Flask, session, Blueprint
 from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology
+from helpers import apology, format_date
 import bleach
 from markdown import markdown
 from helpers import clean_markdown
@@ -41,6 +41,7 @@ app.register_blueprint(others)
 
 
 app.jinja_env.filters['clean_markdown'] = clean_markdown
+app.jinja_env.filters['format_date'] = format_date
 
 
 def errorhandler(e):
