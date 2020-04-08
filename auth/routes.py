@@ -17,9 +17,6 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
-week_days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-
-
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
@@ -61,10 +58,9 @@ def login():
             today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
         session['today_date_object'] = today_date
         session['today_name'] = today_date.strftime("%A")
-        session['tomorrow_name'] = week_days[(week_days.index(session['today_name']) + 1) % 7]
+        session['tomorrow_name'] = (today_date + timedelta(days=1)).strftime("%A")
         session['today_date'] = today_date.strftime("%D")
         session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
-        session['full_date'] = session['today_name'] + ", " + today_date.strftime("%b %d %Y")
 
         # Redirect user to home page
         return redirect("/")
@@ -164,10 +160,9 @@ def register():
     today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
     session['today_date_object'] = today_date
     session['today_name'] = today_date.strftime("%A")
-    session['tomorrow_name'] = week_days[(week_days.index(session['today_name']) + 1) % 7]
+    session['tomorrow_name'] = (today_date + timedelta(days=1)).strftime("%A")
     session['today_date'] = today_date.strftime("%D")
     session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
-    session['full_date'] = session['today_name'] + ", " + today_date.strftime("%b %d %Y")
     return redirect("/")
 
 
