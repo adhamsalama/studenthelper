@@ -1,7 +1,7 @@
+import os
 from flask import Flask, flash, json, jsonify, redirect, render_template, request, session, Blueprint
-from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
-from helpers import *
+from helpers import apology, login_required, quote_of_the_day
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from cachetools import TTLCache
@@ -116,7 +116,7 @@ def s_type(module_type):
     if not subjects:
         return apology("type not found")
     subjects_day = {"Saturday": [], "Sunday": [], "Monday": [], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": []}
-    days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    #days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     counter = 0
     for s in subjects:
         subjects_day[s["day"]].append(s)
@@ -208,3 +208,14 @@ def sfe(n):
 @others.route("/about_me")
 def about_me():
     return render_template("about_me.html")
+
+def errorhandler(e):
+    """Handle error"""
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+    return apology(e.name, e.code)
+
+
+# Listen for errors
+for code in default_exceptions:
+    others.errorhandler(code)(errorhandler)
