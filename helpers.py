@@ -68,3 +68,8 @@ def clean_markdown(note):
     
     return markdown(bleach.clean(note))
     
+
+def format_date(d):
+    """Formats a date"""
+
+    return d.strftime("%A %B %d %Y")
