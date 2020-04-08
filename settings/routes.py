@@ -146,7 +146,6 @@ def feedback():
 def update_date():
     """Updates the date"""
 
-    week_days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     if not request.form.get('today_date'):
         return apology("something went wrong")
     today_date = request.form.get('today_date')
@@ -156,10 +155,9 @@ def update_date():
     except:
         return apology("incorrect Date")
     session['today_name'] = today_date.strftime("%A")
-    session['tomorrow_name'] = week_days[(week_days.index(session['today_name']) + 1) % 7]
+    session['tomorrow_name'] = (today_date + timedelta(days=1)).strftime("%A")
     session['today_date'] = today_date.strftime("%D")
     session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
-    session['full_date'] = session['today_name'] + ", " + today_date.strftime("%b %d %Y")
 
     return redirect("/")
 
