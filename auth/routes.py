@@ -2,10 +2,7 @@ from flask import flash, json, jsonify, redirect, render_template, request, sess
 from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, send_email
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-import os
+from helpers import apology, send_email, connectdb
 from datetime import datetime, timedelta
 
 
@@ -13,8 +10,7 @@ auth = Blueprint('auth', __name__)
 
 
 # Set up database
-engine = create_engine(os.getenv("DATABASE_URL"))
-db = scoped_session(sessionmaker(bind=engine))
+db = connectdb()
 
 
 @auth.route("/login", methods=["GET", "POST"])

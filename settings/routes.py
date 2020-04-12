@@ -2,18 +2,15 @@ from flask import flash, redirect, render_template, request, session, Blueprint
 from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, send_email
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-import os
+from helpers import apology, login_required, connectdb, send_email
 from datetime import datetime, timedelta
 
 
 settings = Blueprint('settings', __name__)
 
 # Set up database
-engine = create_engine(os.getenv("DATABASE_URL"))
-db = scoped_session(sessionmaker(bind=engine))
+db = connectdb()
+
 
 @settings.route("/settings/change_password", methods=["GET", "POST"])
 @login_required

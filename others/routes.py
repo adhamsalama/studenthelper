@@ -1,9 +1,6 @@
-import os
 from flask import Flask, flash, json, jsonify, redirect, render_template, request, session, Blueprint
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
-from helpers import apology, login_required, quote_of_the_day
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from helpers import apology, login_required, connectdb, quote_of_the_day
 from cachetools import TTLCache
 from datetime import timedelta
 
@@ -12,8 +9,7 @@ from datetime import timedelta
 others = Blueprint('others', __name__)
 
 # Set up database
-engine = create_engine(os.getenv("DATABASE_URL"))
-db = scoped_session(sessionmaker(bind=engine))
+db = connectdb()
 
 
 cache = TTLCache(maxsize=10, ttl=86400)
