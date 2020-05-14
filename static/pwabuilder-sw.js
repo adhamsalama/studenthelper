@@ -12,7 +12,7 @@ const assets = [
     '/static/subject_time.js',
     '/static/due.js',
     '/static/logo.png',
-    '/static/superhero_bootstrap.min.css',
+    '/static/darkly_bootstrap.min.css',
     'https://code.jquery.com/jquery-3.3.1.min.js'
 ];
 
