@@ -65,18 +65,12 @@ def profile():
     # Getting number of subjects
     subjects = db.execute("SELECT COUNT(DISTINCT subject) FROM subjects WHERE user_id = :id",
                           {"id": session["user_id"]}).fetchone()[0]
-    subjects_type_count = db.execute("SELECT DISTINCT type, COUNT(*) FROM subjects WHERE user_id = :id GROUP BY type ORDER BY type",
-                          {"id": session["user_id"]}).fetchall()
-    if not subjects_type_count:
-        labs = 0
-        lectures = 0
-        sections = 0
-        total = 0
-    else:
-        labs = subjects_type_count[0]["count"]
-        lectures = subjects_type_count[1]["count"]
-        sections = subjects_type_count[2]["count"]
-        total = labs + sections + lectures
+    labs_count = db.execute("SELECT COUNT(*) FROM subjects WHERE user_id = :id AND type = 'Lab'",
+                          {"id": session["user_id"]}).fetchone()[0]
+    lectures_count = db.execute("SELECT COUNT(*) FROM subjects WHERE user_id = :id AND type = 'Lecture'",
+                          {"id": session["user_id"]}).fetchone()[0]
+    sections_count = db.execute("SELECT COUNT(*) FROM subjects WHERE user_id = :id AND type = 'Section'",
+                          {"id": session["user_id"]}).fetchone()[0]
     days = db.execute("SELECT DISTINCT day, COUNT(day) FROM subjects WHERE user_id = :id GROUP BY day",
                       {"id": session["user_id"]}).fetchall()
     days_off = 7 - int(len(days))
@@ -85,7 +79,7 @@ def profile():
     for x in days:
         d[x["day"]] = x["count"]
     time = db.execute("SELECT date FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()[0]
-    return render_template("profile.html", subjects=subjects, lectures=lectures, sections=sections, labs=labs, total=total,
+    return render_template("profile.html", subjects=subjects, lectures=lectures_count, sections=sections_count, labs=labs_count, total=labs_count+lectures_count+sections_count,
                            days=d, days_off=days_off, date=time)
 
 
