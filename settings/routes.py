@@ -1,5 +1,4 @@
 from flask import flash, redirect, render_template, request, session, Blueprint
-from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, connectdb, send_email
@@ -103,7 +102,7 @@ def add_email():
             return apology(message="this email is already taken")
         try:
             db.execute("UPDATE users SET email = :new_email WHERE id = :id",
-                   {"new_email": email, "id": session["user_id"]})
+                       {"new_email": email, "id": session["user_id"]})
             db.commit()
         except:
             return apology("something went wrong")
@@ -188,4 +187,3 @@ def errorhandler(e):
 # Listen for errors
 for code in default_exceptions:
     settings.errorhandler(code)(errorhandler)
-    

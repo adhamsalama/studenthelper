@@ -1,5 +1,4 @@
-from flask import flash, json, jsonify, redirect, render_template, request, session, Blueprint
-from flask_session import Session
+from flask import flash, jsonify, redirect, render_template, request, session, Blueprint
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, send_email, connectdb
@@ -36,7 +35,8 @@ def login():
                           {"username": request.form.get("username")}).fetchone()
 
         # Ensure username exists and password is correct
-        if not rows or not check_password_hash(rows["hash"], request.form.get("password")):
+        if not rows or not check_password_hash(rows["hash"],
+                                               request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
@@ -51,7 +51,9 @@ def login():
             today_date = datetime.today()
         else:
             today_date = today_date.split("-")
-            today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
+            today_date = datetime(int(today_date[2]),
+                                  int(today_date[0]),
+                                  int(today_date[1]))
         session['today_date_object'] = today_date
         session['today_name'] = today_date.strftime("%A")
         session['tomorrow_name'] = (today_date + timedelta(days=1)).strftime("%A")
@@ -182,6 +184,7 @@ def check():
         return jsonify("Username already taken.")
     return jsonify(True)
 
+
 def errorhandler(e):
     """Handle error"""
     if not isinstance(e, HTTPException):
@@ -192,4 +195,3 @@ def errorhandler(e):
 # Listen for errors
 for code in default_exceptions:
     auth.errorhandler(code)(errorhandler)
-    

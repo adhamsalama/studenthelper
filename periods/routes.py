@@ -1,5 +1,4 @@
 from flask import flash, redirect, render_template, request, session, Blueprint
-from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from helpers import apology, login_required, connectdb
 
@@ -7,14 +6,14 @@ from helpers import apology, login_required, connectdb
 periods = Blueprint('periods', __name__)
 
 # Set up database
-db= connectdb()
+db = connectdb()
 
 
 @periods.route("/add/period", methods=["POST"])
 @login_required
 def add_period():
     """Adds a period"""
-    
+
     subject = request.form.get("subject")
     subject_type = request.form.get("type")
     lecturer = request.form.get("lecturer")
@@ -40,15 +39,15 @@ def add_period():
         return apology("invalid subject type")
     for day in days:
         q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
-                      {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
+                       {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
         if q:
             continue
         try:
             db.execute("INSERT INTO subjects (user_id, subject, type, lecturer, place, start_time, end_time, day) VALUES(:id, :subject, :type, :lecturer, :place, :start, :end, :day)",
-                      {"id": session["user_id"], "subject": subject, "type": subject_type, "lecturer": lecturer, "place": place, "start": start, "end": end, "day": day})
+                       {"id": session["user_id"], "subject": subject, "type": subject_type, "lecturer": lecturer, "place": place, "start": start, "end": end, "day": day})
             db.commit()
             session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                            {"id": session["user_id"]}).fetchall()
+                                             {"id": session["user_id"]}).fetchall()
         except:
             return apology("something went wrong with the database")
     flash("Period added!")
@@ -60,9 +59,9 @@ def add_period():
 def edit_period():
     """Edit a subject"""
     if request.method == "POST":
-        #recieved_token = request.form.get("token")
-        #if not recieved_token or recieved_token != session["form_token"]:
-            #return apology("fuck off cross-site forgeing piece of shit")
+        # recieved_token = request.form.get("token")
+        # if not recieved_token or recieved_token != session["form_token"]:
+        # return apology("fuck off cross-site forgeing piece of shit")
         subject = request.form.get("subject")
         subject_type = request.form.get("type")
         lecturer = request.form.get("lecturer")
@@ -84,21 +83,21 @@ def edit_period():
         place = place.title()
         day = day.capitalize()
         if not old_subject or not old_subject_type or not old_lecturer or not old_place or not old_start or not old_end or not old_day:
-            return apology("something went form") 
+            return apology("something went form")
         try:
             db.execute("UPDATE subjects SET subject = :s, type = :t, lecturer = :l, place = :p, start_time = :st, end_time = :e, day = :d WHERE user_id = :id AND subject = :o_s AND type = :o_t AND lecturer = :o_l AND place = :o_p AND start_time = :o_st AND end_time = :o_e AND day = :o_d",
-                    {"s": subject, "t": subject_type, "p": place, "l": lecturer, "st": start, "e": end, "d": day, "id": session["user_id"],
-                    "o_s": old_subject, "o_t": old_subject_type, "o_p": old_place, "o_l": old_lecturer, "o_st": old_start, "o_e": old_end, "o_d": old_day})
+                       {"s": subject, "t": subject_type, "p": place, "l": lecturer, "st": start, "e": end, "d": day, "id": session["user_id"],
+                        "o_s": old_subject, "o_t": old_subject_type, "o_p": old_place, "o_l": old_lecturer, "o_st": old_start, "o_e": old_end, "o_d": old_day})
             db.commit()
         except:
             return apology("something went wrong")
         session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                     {"id": session["user_id"]}).fetchall()
+                                         {"id": session["user_id"]}).fetchall()
         flash("Period edited!")
         return redirect(f"/subjects/{subject}")
     else:
-        #token = secrets.token_hex()
-        #session["form_token"] = token
+        # token = secrets.token_hex()
+        # session["form_token"] = token
         subject = request.args.get("subject")
         subject_type = request.args.get("type")
         lecturer = request.args.get("lecturer")
@@ -109,11 +108,11 @@ def edit_period():
         if not subject or not subject_type or not lecturer or not place or not start or not end or not day:
             return apology(message="please fill the form")
         q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject = :s AND type = :t AND lecturer = :l AND place = :p AND start_time = :s_t AND end_time = :e AND day = :d",
-                        {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
+                       {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
         if not q:
             return apology("subject doesn't exist")
-        return render_template("edit_period.html", subject=subject, type=subject_type, 
-                            lecturer=lecturer, place=place, start=start, end=end, day=day)
+        return render_template("edit_period.html", subject=subject, type=subject_type,
+                               lecturer=lecturer, place=place, start=start, end=end, day=day)
 
 
 @periods.route("/delete/period", methods=["POST"])
@@ -140,11 +139,11 @@ def delete_period():
     db.commit()
 
     # Update session['subjects'] (used in navbar and filling forms) because this might be the last period of the subject (which deletes it entirely)
-    subject_count = db.execute("SELECT COUNT(subject) FROM subjects WHERE user_id = :id AND subject = :s", {"id": session["user_id"], 's': s}).fetchone()[0]    
+    subject_count = db.execute("SELECT COUNT(subject) FROM subjects WHERE user_id = :id AND subject = :s", {"id": session["user_id"], 's': s}).fetchone()[0]
     print(subject_count)
     if subject_count == 0:
         session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                        {"id": session["user_id"]}).fetchall()
+                                         {"id": session["user_id"]}).fetchall()
         # Delete the subject's dues
         db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": s})
         # Delete the subjetc's notes
