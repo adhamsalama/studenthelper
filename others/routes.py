@@ -1,6 +1,6 @@
 from flask import Flask, flash, json, jsonify, redirect, render_template, request, session, Blueprint
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
-from helpers import apology, login_required, connectdb, quote_of_the_day
+from helpers import apology, login_required, connectdb, quote_of_the_day, rowproxy_to_dict
 from cachetools import TTLCache
 from datetime import timedelta
 
@@ -33,10 +33,7 @@ def index():
     res = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
     #changed RowProxy result to python dict cuz sessions can't deal with RowProxy cuz they are unserializable json
-    dummy = {}
-    for r in res:
-        dummy[r[0]] = r[0]
-    session["subjects"] = dummy
+    session["subjects"] = rowproxy_to_dict(res)
     week = session['today_date_object']  + timedelta(days=7)
     # Getting this week's dues
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline <= :w AND deadline >= :d ORDER BY deadline", {"id": session["user_id"], 'w': week, "d": session['today_date']}).fetchall()

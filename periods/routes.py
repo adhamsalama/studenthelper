@@ -1,6 +1,6 @@
 from flask import flash, redirect, render_template, request, session, Blueprint
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
-from helpers import apology, login_required, connectdb
+from helpers import apology, login_required, connectdb, rowproxy_to_dict
 
 
 periods = Blueprint('periods', __name__)
@@ -46,8 +46,8 @@ def add_period():
             db.execute("INSERT INTO subjects (user_id, subject, type, lecturer, place, start_time, end_time, day) VALUES(:id, :subject, :type, :lecturer, :place, :start, :end, :day)",
                        {"id": session["user_id"], "subject": subject, "type": subject_type, "lecturer": lecturer, "place": place, "start": start, "end": end, "day": day})
             db.commit()
-            session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                             {"id": session["user_id"]}).fetchall()
+            session["subjects"] = rowproxy_to_dict(db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                             {"id": session["user_id"]}).fetchall())
         except:
             return apology("something went wrong with the database")
     flash("Period added!")
@@ -91,8 +91,8 @@ def edit_period():
             db.commit()
         except:
             return apology("something went wrong")
-        session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                         {"id": session["user_id"]}).fetchall()
+        session["subjects"] = rowproxy_to_dict(db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                         {"id": session["user_id"]}).fetchall())
         flash("Period edited!")
         return redirect(f"/subjects/{subject}")
     else:
@@ -140,10 +140,9 @@ def delete_period():
 
     # Update session['subjects'] (used in navbar and filling forms) because this might be the last period of the subject (which deletes it entirely)
     subject_count = db.execute("SELECT COUNT(subject) FROM subjects WHERE user_id = :id AND subject = :s", {"id": session["user_id"], 's': s}).fetchone()[0]
-    print(subject_count)
     if subject_count == 0:
-        session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                         {"id": session["user_id"]}).fetchall()
+        session["subjects"] = rowproxy_to_dict(db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                         {"id": session["user_id"]}).fetchall())
         # Delete the subject's dues
         db.execute("DELETE FROM dues WHERE user_id = :id AND subject = :s", {"id": session["user_id"], "s": s})
         # Delete the subjetc's notes

@@ -2,7 +2,7 @@ from flask import flash, redirect, render_template, request, session, Blueprint
 from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, connectdb
+from helpers import apology, login_required, connectdb, rowproxy_to_dict
 
 
 subjects = Blueprint('subjects', __name__)
@@ -89,8 +89,8 @@ def delete_subject():
     except:
         return apology("somethign went wrong")
     # Update the session['subjects']
-    session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
-                                     {"id": session["user_id"]}).fetchall()
+    session["subjects"] = rowproxy_to_dict(db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
+                                     {"id": session["user_id"]}).fetchall())
     flash("Subject deleted!")
     return redirect("/")
 
@@ -110,7 +110,7 @@ def rename_subject():
         db.execute("UPDATE dues SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
         db.execute("UPDATE notes SET subject = :new_name WHERE subject = :old_name AND user_id = :id", {"new_name": new_name, "old_name": old_name, "id": session["user_id"]})
         db.commit()
-        session["subjects"] = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject", {"id": session["user_id"]}).fetchall()
+        session["subjects"] = rowproxy_to_dict(db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject", {"id": session["user_id"]}).fetchall())
         flash("Subject name updated!")
         return redirect(f"/subjects/{new_name.replace(' ', '_')}")
     except:
