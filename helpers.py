@@ -85,3 +85,10 @@ def format_date(d):
     """Formats a date"""
 
     return d.strftime("%A %B %d %Y")
+
+
+def rowproxy_to_dict(row):
+    dummy = {}
+    for r in row:
+        dummy[r[0]] = r[0]
+    return dummy
