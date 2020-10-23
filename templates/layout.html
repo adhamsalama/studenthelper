@@ -46,7 +46,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% if session["subjects"] %}
                         {% for s in session["subjects"] %}
-                        <a class="dropdown-item" href="/subjects/{{ s[0]|replace(' ', '_') }}">{{ s[0] }}</a>
+                        <a class="dropdown-item" href="/subjects/{{ s|replace(' ', '_') }}">{{ s }}</a>
                         {% endfor %}
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/schedule">Schedule</a>
@@ -90,13 +90,7 @@
             {% endif %}
         </div>
     </nav>
-    {% if get_flashed_messages() %}
-    <header>
-        <div class="alert alert-info border text-center" role="alert">
-            {{ get_flashed_messages() | join(" ") }}
-        </div>
-    </header>
-    {% endif %}
+
     {% block head %} {% endblock %}
     <main class="container py-5">
         {% block main %}{% endblock %}

@@ -12,12 +12,23 @@ from notes.routes import notes
 from others.routes import others
 
 app = Flask(__name__)
+import os
+from flask_sqlalchemy import SQLAlchemy
 
 # Configure session to use filesystem
-app.config["SESSION_PERMANENT"] = True
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
 
+db = SQLAlchemy(app)
+db.create_all()
+
+app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_TYPE"] = "sqlalchemy"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SESSION_SQLALCHEMY_TABLE'] = 'sessions'
+app.config['SESSION_SQLALCHEMY'] = db
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+#session = Session(app)
+#session.app.session_interface.db.create_all()
+#SqlAlchemySessionInterface(app, db, "sessions", "sess_")
 
 app.register_blueprint(auth)
 app.register_blueprint(settings)
