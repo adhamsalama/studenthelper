@@ -153,6 +153,7 @@ def update_date():
     session['today_name'] = today_date.strftime("%A")
     session['tomorrow_name'] = (today_date + timedelta(days=1)).strftime("%A")
     session['today_date'] = today_date.strftime("%D")
+    session['today_date_object'] = today_date
     session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
 
     return redirect("/")
