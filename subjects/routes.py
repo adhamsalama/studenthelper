@@ -35,7 +35,7 @@ def subject(subject):
     if not subject:
         return apology(message="subject not found")
     subject = subject.replace("_", " ")
-    q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject ILIKE :subject",
+    q = db.execute("SELECT * FROM subjects WHERE user_id = :id AND subject ILIKE :subject ORDER BY start_time",
                    {"id": session["user_id"], "subject": subject.replace("_", " ")}).fetchall()
     if not q:
         return apology("can't find subject")
