@@ -29,7 +29,7 @@
                         <select class="custom-select form-control" name="subject" required>
                             <option value="" disabled selected>Subject</option>
                             {% for subject in session['subjects'] %}
-                                <option value="{{ subject[0] }}">{{ subject[0] }}</option>
+                                <option value="{{ subject }}">{{ subject }}</option>
                             {% endfor %}
                         </select>
                         <div class="invalid-feedback">Please choose a subject</div>
