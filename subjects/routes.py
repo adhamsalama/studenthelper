@@ -54,7 +54,7 @@ def subject(subject):
     for s in q:
         subjects[s["day"]].append(s)
         counter += 1
-    notes = db.execute("SELECT * FROM notes WHERE user_id = :id AND subject ILIKE :s ORDER BY date DESC", {"id": session["user_id"], "s": subject}).fetchall()
+    notes = db.execute("SELECT * FROM notes WHERE user_id = :id AND subject ILIKE :s ORDER BY id DESC", {"id": session["user_id"], "s": subject}).fetchall()
     return render_template("subject.html", info=subjects, subject=subject, counter=counter, lecturer=lecturer, dues=dues, notes=notes)
 
 
