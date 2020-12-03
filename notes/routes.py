@@ -13,7 +13,7 @@ db = connectdb()
 @notes.route("/notes")
 @login_required
 def notes_():
-    notes = db.execute("SELECT * FROM notes WHERE user_id = :id ORDER BY date id", {"id": session["user_id"]}).fetchall()
+    notes = db.execute("SELECT * FROM notes WHERE user_id = :id ORDER BY id DESC", {"id": session["user_id"]}).fetchall()
     return render_template("notes.html", notes=notes)
 
 
