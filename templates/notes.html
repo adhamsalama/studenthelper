@@ -38,6 +38,7 @@
                         <textarea class="form-control med-form" placeholder="Note (Supports Markdown)" name="note" required></textarea>
                         <div class="invalid-feedback">Please write your note</div>
                     </div>
+                    <input type="hidden" name="current_date" id="current_date">
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success ml-auto  w-100 text-center" type="submit">Add</button>
@@ -85,4 +86,9 @@
 </div>
 {% endfor %}
 {% endif %}
+<script>
+    let date = new Date();
+    let min_date = date.toISOString().slice(0,10);
+    document.querySelector("#current_date").value = min_date;
+</script>
 {% endblock %}

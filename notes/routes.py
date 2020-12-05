@@ -22,10 +22,11 @@ def notes_():
 def add_note():
     subject = request.form.get("subject")
     note = request.form.get("note")
+    current_date = request.form.get("current_date")
     if not subject or not note:
         return apology("please fill the form")
     try:
-        db.execute("INSERT INTO notes (user_id, subject, note, date) VALUES(:id, :s, :n, :d)", {"id": session["user_id"], "s": subject, "n": note, "d": session["today_date"]})
+        db.execute("INSERT INTO notes (user_id, subject, note, date) VALUES(:id, :s, :n, :d)", {"id": session["user_id"], "s": subject, "n": note, "d": current_date})
         db.commit()
     except:
         return apology("something went wrong")
