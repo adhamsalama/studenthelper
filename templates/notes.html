@@ -61,12 +61,12 @@
 </div>
 {% else %}
 {% for note in notes %}
-<div class="card text-center m-3" id="header">
+<div class="card m-3" class="header">
     <div class="card-header">
         {{ note["subject"] }}
     </div>
-    <div class="card-body">
-        <h5 class="card-title">
+    <div class="card-body text-left">
+        <h5 class="card-title text-right">
             {{ note["date"] }}
         </h5>
         {{ note["note"]|clean_markdown|safe }}
