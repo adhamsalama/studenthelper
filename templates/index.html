@@ -149,29 +149,7 @@ Home
 <div id="content">
 
 </div>
-<hr>
-<div class="alert alert-info" id="weather" style="display: none" role="alert">
-</div>
-{% if quote %}
-<div class="card text-center" id="header">
-    <div class="card-header">
-        Quote of The Day
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">
-            {{ quote["quote"] }}
-            <br>
-            - {{ quote["author"] }}.
-        </h5>
 
-    </div>
-</div>
-Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://theysaidso.com/branding/theysaidso.png"
-        height="20" width="20" alt="theysaidso.com" /><a href="https://theysaidso.com" target="_blank"
-        title="Powered by quotes from theysaidso.com"
-        style="color: #9fcc25; margin-left: 4px; vertical-align: middle;">theysaidso.com</a></span>
-        <br>
-{% endif %}
 <script src="/static/add_subject.js"></script>
 <script src="/static/due.js"></script>
 <script>
@@ -191,7 +169,6 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
     function get_weather_data() {
         navigator.geolocation.getCurrentPosition(getLatLon);
         function getLatLon(position) {
-            console.log("weatheeer");
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
             let request = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&mode=html&appid=aaacf01424b1f47c7dadcd2a1f8eb254";
