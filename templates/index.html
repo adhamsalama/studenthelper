@@ -16,11 +16,11 @@ Home
         <br>
         Number of dues this week: <span id="dues_count"></span>
     </p>
-    <button type="button" class="btn btn-success " data-toggle="modal" data-target="#add">
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_period">
         Add Period
     </button>
     <!-- Modal -->
-    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="add_period" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -30,7 +30,7 @@ Home
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" id="f" novalidate action="/add/period" method="post">
+                    <form class="needs-validation" novalidate action="/add/period" method="post">
                         <div class="form-group mb-2">
                             <input   class="form-control" name="subject"
                                 placeholder="Subject" type="text" required>
@@ -130,6 +130,98 @@ Home
             </div>
         </div>
     </div>
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_due">
+        Add Due
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="add_due" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100 text-center" id="exampleModalLabel">Add Due</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate action="/add/due" method="post">
+                    <div class="form-group mb-2">
+                        <select class="custom-select form-control" name="subject" required>
+                            <option value="" disabled selected>Subject</option>
+                            {% for subject in session['subjects'] %}
+                                <option value="{{ subject }}">{{ subject }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">Please choose a subject</div>
+                    </div>
+                <div class="form-group mb-2">
+                        <select class="custom-select form-control" name="type" required>
+                            <option value="" disabled selected>Type</option>
+                                <option value="Assignment">Assignment</option>
+                                <option value="Exam">Exam</option>
+                                <option value="Project">Project</option>
+                                <option value="Quiz">Quiz</option>
+                                <option value="Other">Other</option>
+                        </select>
+                        <div class="invalid-feedback">Please choose a type</div>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="deadline">Deadline</label>
+                        <input autocomplete="off" autofocus class="form-control" name="deadline" id="deadline" type="date"
+                            required>
+                        <div class="invalid-feedback">Please enter deadline</div>
+
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control med-form" placeholder="TODO" name="required"></textarea>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success ml-auto  w-100 text-center" type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_note">
+        Add Note
+    </button>
+        <!-- Modal -->
+    <div class="modal fade" id="add_note" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100 text-center" id="exampleModalLabel">Add Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate action="/add/note" method="post">
+                    <div class="form-group mb-2">
+                        <select class="custom-select form-control" name="subject" required>
+                            <option value="" disabled selected>Subject</option>
+                            {% for subject in session["subjects"] %}
+                            <option value="{{ subject }}">{{ subject }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">Please choose a subject</div>
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control med-form" placeholder="Note (Supports Markdown)" name="note" required></textarea>
+                        <div class="invalid-feedback">Please write your note</div>
+                    </div>
+                    <input type="hidden" name="current_date" id="current_date">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success ml-auto  w-100 text-center" type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+
     <form method="get" class="mt-2" target="_blank">
         <div class="form-group mb-2">
             <input type="text" placeholder="Search" name="q" class="form-control"
@@ -155,6 +247,7 @@ Home
 <script>
     let date = new Date();
     document.querySelector("#date").innerText = date.toDateString();
+    document.querySelector("#current_date").value = date.toISOString().slice(0, 10);    
     fetch('/data/' + date.toISOString().slice(0, 10))
     .then(response => response.json())
     .then(result =>  {
