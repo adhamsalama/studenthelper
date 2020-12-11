@@ -45,21 +45,6 @@ def login():
         session["email"] = rows["email"]
         session["uni"] = rows["university"]
 
-        # Setup the dates
-        today_date = request.form.get('today_date')
-        if not today_date:
-            today_date = datetime.today()
-        else:
-            today_date = today_date.split("-")
-            today_date = datetime(int(today_date[2]),
-                                  int(today_date[0]),
-                                  int(today_date[1]))
-        session['today_date_object'] = today_date
-        session['today_name'] = today_date.strftime("%A")
-        session['tomorrow_name'] = (today_date + timedelta(days=1)).strftime("%A")
-        session['today_date'] = today_date.strftime("%D")
-        session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
-
         # Redirect user to home page
         return redirect("/")
 
@@ -149,18 +134,6 @@ def register():
     session["email"] = rows["email"]
     session["uni"] = rows["university"]
     flash("You're now registered!")
-
-    # Setup the dates
-    today_date = request.form.get('today_date')
-    if not today_date:
-        return apology('please enable javascript your account has been registered')
-    today_date = today_date.split("-")
-    today_date = datetime(int(today_date[2]), int(today_date[0]), int(today_date[1]))
-    session['today_date_object'] = today_date
-    session['today_name'] = today_date.strftime("%A")
-    session['tomorrow_name'] = (today_date + timedelta(days=1)).strftime("%A")
-    session['today_date'] = today_date.strftime("%D")
-    session['tomorrow_date'] = (today_date + timedelta(days=1)).strftime("%D")
     return redirect("/")
 
 
