@@ -1,0 +1,128 @@
+
+
+{% if subjects %}
+<div class="table-responsive ">
+    <table class="table table-dark table-striped table-hover">
+        <caption>Today's Periods</caption>
+        <thead>
+            <tr>
+                <th scope="col">Subject</th>
+                <th scope="col">Type</th>
+                <th scope="col">Lecturer</th>
+                <!--    <th scope="col">Day</th> -->
+                <th scope="col">Place</th>
+                <th scope="col">Starts</th>
+                <th scope="col">Ends</th>
+                <!-- <th scope="col">Delete</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in subjects %}
+            <tr>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
+                <td><a href="/type/{{ subject['type'] }}">{{ subject["type"] }}</a></td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>
+                <!--    <td><a href="/days/{{ subject['day'] }}" class="link"><span class="day">{{ subject["day"] }}</span></a> </td> -->
+                <td><a href="/place/{{ subject['place'] | replace(' ', '_') }}">{{ subject["place"] }}</a></td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
+                            class="time">{{ subject["start_time"] }}</a>
+                </td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
+                            class="time">{{ subject["end_time"] }}</a></td>
+                <!-- <td>
+                    <form action="/delete/subject" class="form" method="post">
+                        <input type="hidden" name="subject" value="{{ subject['subject'] }}">
+                        <input type="hidden" name="type" value="{{ subject['type'] }}">
+                        <input type="hidden" name="lecturer" value="{{ subject['lecturer'] }}">
+                        <input type="hidden" name= "day" value="{{ subject['day'] }}">
+                        <input type="hidden" name="place" value="{{ subject['place'] }}">
+                        <input type="hidden" name="start" value="{{ subject['start_time'] }}">
+                        <input type="hidden" name="end" value="{{ subject['end_time'] }}">
+                        <button class="btn btn-info" type="submit">Delete</button>
+                    </form>
+                </td> -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">You're free!</h4>
+    <p>You don't have any periods today.</p>
+</div>
+{% endif %}
+{% if tomorrow_subjects %}
+<div class="table-responsive ">
+    <table class="table table-dark table-striped table-hover">
+        <caption>Tomorrow's Periods</caption>
+        <thead>
+            <tr>
+                <th scope="col">Subject</th>
+                <th scope="col">Type</th>
+                <th scope="col">Lecturer</th>
+                <th scope="col">Place</th>
+                <th scope="col">Starts</th>
+                <th scope="col">Ends</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in tomorrow_subjects %}
+            <tr>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
+                <td><a href="/type/{{ subject['type'] }}">{{ subject["type"] }}</a></td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>
+                <!--    <td><a href="/days/{{ subject['day'] }}" class="link"><span class="day">{{ subject["day"] }}</span></a> </td> -->
+                <td><a href="/place/{{ subject['place'] | replace(' ', '_') }}">{{ subject["place"] }}</a></td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
+                            class="time">{{ subject["start_time"] }}</a>
+                </td>
+                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
+                            class="time">{{ subject["end_time"] }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-success" role="alert">
+    Woohoo! You don't have any periods tomorrow!
+</div>
+{% endif %}
+{% if not dues %}
+<div class="alert alert-success" role="alert">
+    Woohoo! No dues this week!
+</div>
+{% else %}
+
+<div class="table-responsive">
+    <table class="table table-dark table-striped table-hover">
+        <caption>This Week's Dues</caption>
+        <thead>
+            <tr>
+                <th scope="col">Subject</th>
+                <th scope="col">Type</th>
+                <th scope="col">TODO</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">Due</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for due in dues %}
+            <tr>
+                <td><a href="/subjects/{{ due['subject'] }}">{{ due["subject"] }}</a></td>
+                <td><a href="/subjects/{{ due['subject'] }}">{{ due["type"] }}</a></td>
+                <td style="word-break: break-word">{{ due["required"] }}</td>
+                <td><a class="deadline" href="/subjects/{{ due['subject'] }}">{{ due["deadline"] }}</a></td>
+                <td><a href="/subjects/{{ due['subject'] }}"><span class="time-left"></span></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<hr>
+<div class="alert alert-info" id="weather" style="display: none" role="alert">
+</div>
+

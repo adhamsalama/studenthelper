@@ -2,11 +2,11 @@ from flask import Flask, flash, json, jsonify, redirect, render_template, reques
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from helpers import apology, login_required, connectdb, quote_of_the_day, rowproxy_to_dict
 from cachetools import TTLCache
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 
 
-others = Blueprint('others', __name__)
+others = Blueprint('others', __name__, template_folder='templates')
 
 # Set up database
 db = connectdb()
@@ -15,30 +15,39 @@ db = connectdb()
 cache = TTLCache(maxsize=10, ttl=86400)
 cache["quote"] = quote_of_the_day()
 
-
 @others.route("/")
 @login_required
 def index():
     """Display index page"""
+    return render_template("index.html")
+
+
+@others.route("/data/<date>")
+@login_required
+def data(date):
+    """Return today's data as an HTML snippet"""
     try:
         quote = cache["quote"]
     except:
         cache["quote"] = quote_of_the_day()
         quote = cache["quote"]
-
+    date = date.split("-")
+    today_date = datetime(year=int(date[0]), month=int(date[1]), day=int(date[2]))
     today_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :day ORDER BY start_time",
-                   {"id": session["user_id"], "day": session['today_name']}).fetchall()
-    tomorrow_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :next ORDER BY start_time",
-                         {"id": session["user_id"], "next": session['tomorrow_name']}).fetchall()
+                   {"id": session["user_id"], "day": today_date.strftime("%A")}).fetchall()
+    tomorrow_subjects = db.execute("SELECT * FROM subjects WHERE user_id = :id AND day = :tomorrow ORDER BY start_time",
+                         {"id": session["user_id"], "tomorrow": (today_date + timedelta(days=1)).strftime("%A")}).fetchall()
     res = db.execute("SELECT DISTINCT subject FROM subjects WHERE user_id = :id ORDER BY subject",
                                      {"id": session["user_id"]}).fetchall()
     #changed RowProxy result to python dict cuz sessions can't deal with RowProxy cuz they are unserializable json
     session["subjects"] = rowproxy_to_dict(res)
-    week = session['today_date_object']  + timedelta(days=7)
+    week = today_date + timedelta(days=7)
     # Getting this week's dues
-    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline <= :w AND deadline >= :d ORDER BY deadline", {"id": session["user_id"], 'w': week, "d": session['today_date']}).fetchall()
-    return render_template("index.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, dues=dues, quote=quote)
-
+    dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline <= :w AND deadline >= :d ORDER BY deadline", {"id": session["user_id"], 'w': week, "d": today_date.strftime("%Y-%m-%d")}).fetchall()
+    #head =  render_template("head.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, dues=dues, quote=quote)
+    main =  render_template("main.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, dues=dues, quote=quote)
+    return jsonify({"main": main, "periods_count": len(today_subjects), "dues_count": len(dues)})
+    #return jsonify({"today_subjects": rowproxy_to_dict(today_subjects), "tomorrow_subjects": rowproxy_to_dict(tomorrow_subjects), "dues": rowproxy_to_dict(dues)})
 
 @others.route("/search", methods=["GET"])
 @login_required

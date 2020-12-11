@@ -1,3 +1,4 @@
+
 {% extends "layout.html" %}
 
 {% block title %}
@@ -5,14 +6,15 @@ Home
 {% endblock %}
 
 {% block head %}
+<div id="head">
 <div class="jumbotron text-center">
     <h1 class="display-4">Welcome, {{ session["username"] }}!</h1>
     <p class="lead">
-        Today is {{ session['today_date_object']|format_date }}.
+        Today is <span id="date"></span>.
         <br>
-        Number of periods today: {{ subjects|length }}
+        Number of periods today: <span id="periods_count"></span>
         <br>
-        Number of dues this week: {{ dues|length }}
+        Number of dues this week: <span id="dues_count"></span>
     </p>
     <button type="button" class="btn btn-success " data-toggle="modal" data-target="#add">
         Add Period
@@ -139,132 +141,14 @@ Home
             class="btn btn-danger ">Youtube</button>
     </form>
 </div>
+</div>
 
 {% endblock %}
 {% block main %}
 
-{% if subjects %}
-<div class="table-responsive ">
-    <table class="table table-dark table-striped table-hover">
-        <caption>Today's Periods</caption>
-        <thead>
-            <tr>
-                <th scope="col">Subject</th>
-                <th scope="col">Type</th>
-                <th scope="col">Lecturer</th>
-                <!--    <th scope="col">Day</th> -->
-                <th scope="col">Place</th>
-                <th scope="col">Starts</th>
-                <th scope="col">Ends</th>
-                <!-- <th scope="col">Delete</th> -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for subject in subjects %}
-            <tr>
-                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
-                <td><a href="/type/{{ subject['type'] }}">{{ subject["type"] }}</a></td>
-                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>
-                <!--    <td><a href="/days/{{ subject['day'] }}" class="link"><span class="day">{{ subject["day"] }}</span></a> </td> -->
-                <td><a href="/place/{{ subject['place'] | replace(' ', '_') }}">{{ subject["place"] }}</a></td>
-                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
-                            class="time">{{ subject["start_time"] }}</a>
-                </td>
-                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
-                            class="time">{{ subject["end_time"] }}</a></td>
-                <!-- <td>
-                    <form action="/delete/subject" class="form" method="post">
-                        <input type="hidden" name="subject" value="{{ subject['subject'] }}">
-                        <input type="hidden" name="type" value="{{ subject['type'] }}">
-                        <input type="hidden" name="lecturer" value="{{ subject['lecturer'] }}">
-                        <input type="hidden" name= "day" value="{{ subject['day'] }}">
-                        <input type="hidden" name="place" value="{{ subject['place'] }}">
-                        <input type="hidden" name="start" value="{{ subject['start_time'] }}">
-                        <input type="hidden" name="end" value="{{ subject['end_time'] }}">
-                        <button class="btn btn-info" type="submit">Delete</button>
-                    </form>
-                </td> -->
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% else %}
-<div class="alert alert-success" role="alert">
-    <h4 class="alert-heading">You're free!</h4>
-    <p>You don't have any periods today.</p>
-</div>
-{% endif %}
-{% if tomorrow_subjects %}
-<div class="table-responsive ">
-    <table class="table table-dark table-striped table-hover">
-        <caption>Tomorrow's Periods</caption>
-        <thead>
-            <tr>
-                <th scope="col">Subject</th>
-                <th scope="col">Type</th>
-                <th scope="col">Lecturer</th>
-                <th scope="col">Place</th>
-                <th scope="col">Starts</th>
-                <th scope="col">Ends</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for subject in tomorrow_subjects %}
-            <tr>
-                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["subject"] }}</a></td>
-                <td><a href="/type/{{ subject['type'] }}">{{ subject["type"] }}</a></td>
-                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}">{{ subject["lecturer"] }}</a></td>
-                <!--    <td><a href="/days/{{ subject['day'] }}" class="link"><span class="day">{{ subject["day"] }}</span></a> </td> -->
-                <td><a href="/place/{{ subject['place'] | replace(' ', '_') }}">{{ subject["place"] }}</a></td>
-                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
-                            class="time">{{ subject["start_time"] }}</a>
-                </td>
-                <td><a href="/subjects/{{ subject['subject'] | replace(' ', '_') }}"><span
-                            class="time">{{ subject["end_time"] }}</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% else %}
-<div class="alert alert-success" role="alert">
-    Woohoo! You don't have any periods tomorrow!
-</div>
-{% endif %}
-{% if not dues %}
-<div class="alert alert-success" role="alert">
-    Woohoo! No dues this week!
-</div>
-{% else %}
+<div id="content">
 
-<div class="table-responsive">
-    <table class="table table-dark table-striped table-hover">
-        <caption>This Week's Dues</caption>
-        <thead>
-            <tr>
-                <th scope="col">Subject</th>
-                <th scope="col">Type</th>
-                <th scope="col">TODO</th>
-                <th scope="col">Deadline</th>
-                <th scope="col">Due</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for due in dues %}
-            <tr>
-                <td><a href="/subjects/{{ due['subject'] }}">{{ due["subject"] }}</a></td>
-                <td><a href="/subjects/{{ due['subject'] }}">{{ due["type"] }}</a></td>
-                <td style="word-break: break-word">{{ due["required"] }}</td>
-                <td><a class="deadline" href="/subjects/{{ due['subject'] }}">{{ due["deadline"] }}</a></td>
-                <td><a href="/subjects/{{ due['subject'] }}"><span class="time-left"></span></a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
-{% endif %}
-
 <hr>
 <div class="alert alert-info" id="weather" style="display: none" role="alert">
 </div>
@@ -291,14 +175,30 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
 <script src="/static/add_subject.js"></script>
 <script src="/static/due.js"></script>
 <script>
-    navigator.geolocation.getCurrentPosition(getLatLon);
-    function getLatLon(position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-        let request = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&mode=html&appid=aaacf01424b1f47c7dadcd2a1f8eb254";
-        $("#weather").load(request, function () {
-            document.querySelector("#weather").style.display = "inline-block";
-        });
+    let date = new Date();
+    document.querySelector("#date").innerText = date.toDateString();
+    fetch('/data/' + date.toISOString().slice(0, 10))
+    .then(response => response.json())
+    .then(result =>  {
+        //document.querySelector('#head').innerHTML = result["head"];
+        document.querySelector("#periods_count").innerText = result["periods_count"];
+        document.querySelector("#dues_count").innerText = result["dues_count"];
+        document.querySelector('#content').innerHTML = result["main"];
+        format_subject_time();
+        calculate_time_left();
+        get_weather_data();
+    })
+    function get_weather_data() {
+        navigator.geolocation.getCurrentPosition(getLatLon);
+        function getLatLon(position) {
+            console.log("weatheeer");
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            let request = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&mode=html&appid=aaacf01424b1f47c7dadcd2a1f8eb254";
+            $("#weather").load(request, function () {
+                document.querySelector("#weather").style.display = "inline-block";
+            });
+        }
     }
 
 // Service Worker
@@ -318,5 +218,6 @@ Quotes provided by <span style="z-index:50;font-size:0.9em;"><img src="https://t
     }
 
 </script>
+    <script src="/static/subject_time.js"></script>
 
 {% endblock %}
