@@ -247,7 +247,7 @@ Home
 <script>
     let date = new Date();
     document.querySelector("#date").innerText = date.toDateString();
-    date = date.split("/");
+    date = date.toLocaleDateString().split("/");
     date = date[2] + "-" + date[0] + "-" + date[1];
     document.querySelector("#current_date").value = date[2] + "-" + date[0] + "-" + date[1];    
     fetch('/data/' + date)
