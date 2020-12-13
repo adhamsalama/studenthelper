@@ -30,7 +30,7 @@ Home
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" novalidate action="/add/period" method="post">
+                    <form class="needs-validation" id="f" novalidate action="/add/period" method="post">
                         <div class="form-group mb-2">
                             <input   class="form-control" name="subject"
                                 placeholder="Subject" type="text" required>
@@ -247,8 +247,10 @@ Home
 <script>
     let date = new Date();
     document.querySelector("#date").innerText = date.toDateString();
-    document.querySelector("#current_date").value = date.toISOString().slice(0, 10);    
-    fetch('/data/' + date.toISOString().slice(0, 10))
+    date = date.split("/");
+    date = date[2] + "-" + date[0] + "-" + date[1];
+    document.querySelector("#current_date").value = date[2] + "-" + date[0] + "-" + date[1];    
+    fetch('/data/' + date)
     .then(response => response.json())
     .then(result =>  {
         //document.querySelector('#head').innerHTML = result["head"];
