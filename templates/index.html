@@ -249,7 +249,7 @@ Home
     document.querySelector("#date").innerText = date.toDateString();
     date = date.toLocaleDateString().split("/");
     date = date[2] + "-" + date[0] + "-" + date[1];
-    document.querySelector("#current_date").value = date[2] + "-" + date[0] + "-" + date[1];    
+    document.querySelector("#current_date").value = date;    
     fetch('/data/' + date)
     .then(response => response.json())
     .then(result =>  {
