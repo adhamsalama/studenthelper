@@ -10,11 +10,11 @@
         <h1 class="display-4">Notes.</h1>
         <h5 class="lead">Number of notes: {{ notes|length }}
         </h5>
-                <button type="button" class="btn btn-success  mb-2" data-toggle="modal" data-target="#add">
+        <button type="button" class="btn btn-success  mb-2" data-toggle="modal" data-target="#add_note">
             Add Note
         </button>
         <!-- Modal -->
-<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="add_note" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -87,8 +87,8 @@
 {% endfor %}
 {% endif %}
 <script>
-    let date = new Date();
-    let min_date = date.toISOString().slice(0,10);
-    document.querySelector("#current_date").value = min_date;
+    let date = new Date().toLocaleDateString().split("/");
+    date = date[2] + "-" + date[0] + "-" + date[1];
+    document.querySelector("#current_date").value = date;
 </script>
 {% endblock %}
