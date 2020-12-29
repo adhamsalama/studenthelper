@@ -9,7 +9,7 @@ from subjects.routes import subjects
 from periods.routes import periods
 from dues.routes import dues
 from notes.routes import notes
-from others.routes import others
+from main.routes import main
 
 app = Flask(__name__)
 import os
@@ -36,7 +36,7 @@ app.register_blueprint(subjects)
 app.register_blueprint(periods)
 app.register_blueprint(dues)
 app.register_blueprint(notes)
-app.register_blueprint(others)
+app.register_blueprint(main)
 
 
 app.jinja_env.filters['clean_markdown'] = clean_markdown
