@@ -185,27 +185,6 @@ def delete_day():
     return redirect("/")
 
 
-@others.route("/ece/section/<n>", methods=["GET", "POST"])
-@login_required
-def sfe(n):
-    try:
-        n = int(n)
-    except:
-        return apology("section number must be an integer")
-    if request.method == "GET":
-        return render_template("sfe.html", n=n)
-    else:
-        if n > 3:
-            return apology("section not found")
-        q = db.execute("SELECT * FROM subjects WHERE user_id = :id", {"id": 10+n}).fetchall()
-        for s in q:
-            db.execute("INSERT INTO subjects (user_id, subject, type, lecturer, place, start_time, end_time, day) VALUES(:id, :s, :t, :l, :p, :st, :e, :d)",
-                       {"id": session["user_id"], "s": s["subject"], "t": s["type"], "l": s["lecturer"], "p": s["place"], "st": s["start_time"], "e": s["end_time"], "d": s["day"]})
-        db.commit()
-        flash(f"Section {n} schedule added successfully!")
-        return redirect("/")
-
-
 @others.route("/about_me")
 def about_me():
     return render_template("about_me.html")
