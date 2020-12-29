@@ -3,7 +3,7 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from helpers import apology, login_required, connectdb, rowproxy_to_dict
 
 
-periods = Blueprint('periods', __name__)
+periods = Blueprint('periods', __name__, template_folder='templates')
 
 # Set up database
 db = connectdb()
@@ -111,7 +111,7 @@ def edit_period():
                        {"id": session["user_id"], "s": subject, "t": subject_type, "l": lecturer, "p": place, "s_t": start, "e": end, "d": day}).fetchall()
         if not q:
             return apology("subject doesn't exist")
-        return render_template("edit_period.html", subject=subject, type=subject_type,
+        return render_template("periods/edit_period.html", subject=subject, type=subject_type,
                                lecturer=lecturer, place=place, start=start, end=end, day=day)
 
 

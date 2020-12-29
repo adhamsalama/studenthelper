@@ -4,7 +4,7 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from helpers import apology, login_required, connectdb
 
 
-notes = Blueprint('notes', __name__)
+notes = Blueprint('notes', __name__, template_folder='templates')
 
 # Set up database
 db = connectdb()
@@ -14,7 +14,7 @@ db = connectdb()
 @login_required
 def notes_():
     notes = db.execute("SELECT * FROM notes WHERE user_id = :id ORDER BY id DESC", {"id": session["user_id"]}).fetchall()
-    return render_template("notes.html", notes=notes)
+    return render_template("notes/notes.html", notes=notes)
 
 
 @notes.route("/add/note", methods=["POST"])
@@ -42,7 +42,7 @@ def edit_note():
         note = request.args.get("note")
         if not subject or not note:
             return apology("something went wrong")
-        return render_template("edit_note.html", subject=subject, note=note)
+        return render_template("notes/edit_note.html", subject=subject, note=note)
     else:
         subject = request.form.get("subject")
         note = request.form.get("note")

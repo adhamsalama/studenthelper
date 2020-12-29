@@ -5,7 +5,7 @@ from helpers import apology, send_email, connectdb
 from datetime import datetime, timedelta
 
 
-auth = Blueprint('auth', __name__)
+auth = Blueprint('auth', __name__, template_folder='templates')
 
 
 # Set up database
@@ -50,7 +50,7 @@ def login():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        return render_template("login.html")
+        return render_template("auth/login.html")
 
 
 @auth.route("/logout")
@@ -69,7 +69,7 @@ def register():
     """Register user"""
     if request.method == "GET":
         session.clear()
-        return render_template("register.html")
+        return render_template("auth/register.html")
     else:
         username = request.form.get("username")
         password = request.form.get("password")

@@ -1,0 +1,135 @@
+
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome, {{ session["username"] }}!</h1>
+    <p class="lead">
+        Today is <span id="date"> aaaaaaaaaaaah </span>.
+        <br>
+        Number of periods today: {{ subjects|length }}
+        <br>
+        Number of dues this week: {{ dues|length }}
+    </p>
+    <button type="button" class="btn btn-success " data-toggle="modal" data-target="#add">
+        Add Period
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title w-100 text-center" id="exampleModalLabel">Add Period</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" id="f" novalidate action="/add/period" method="post">
+                        <div class="form-group mb-2">
+                            <input   class="form-control" name="subject"
+                                placeholder="Subject" type="text" required>
+                            <div class="invalid-feedback">Please enter your subject</div>
+
+                        </div>
+                        <div class="form-group mb-2">
+                            <select class="custom-select form-control" name="type" required>
+                                <option disabled selected value="">Type</option>
+                                <option value="Lecture">Lecture</option>
+                                <option value="Section">Section</option>
+                                <option value="Lab">Lab</option>
+                            </select>
+                            <div class="invalid-feedback">Please choose a type</div>
+
+                        </div>
+                        <div class="form-group mb-2">
+                            <input   class="form-control" name="lecturer"
+                                placeholder="Lecturer" type="text" required>
+                            <div class="invalid-feedback">Please enter your lecturer's name</div>
+
+                        </div>
+                        <div class="form-group mb-2">
+                            <input   class="form-control" name="place" placeholder="Place"
+                                type="text" required>
+                            <div class="invalid-feedback">Please enter the place</div>
+
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="start">Start time</label>
+                            <input   class="form-control" name="start" id="start" type="time"
+                                required>
+                            <div class="invalid-feedback">Please enter start time</div>
+
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="end">End time</label>
+                            <input   class="form-control" name="end" id="end" type="time"
+                                required>
+                            <div class="invalid-feedback">Please enter end time</div>
+
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Saturday"
+                                id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                Saturday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Sunday"
+                                id="defaultCheck2">
+                            <label class="form-check-label" for="defaultCheck2">
+                                Sunday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Monday"
+                                id="defaultCheck3">
+                            <label class="form-check-label" for="defaultCheck3">
+                                Monday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Tuesday"
+                                id="defaultCheck4">
+                            <label class="form-check-label" for="defaultCheck4">
+                                Tuesday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Wednesday"
+                                id="defaultCheck5">
+                            <label class="form-check-label" for="defaultCheck5">
+                                Wednesday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Thursday"
+                                id="defaultCheck6">
+                            <label class="form-check-label" for="defaultCheck6">
+                                Thursday
+                            </label>
+                        </div>
+                        <div class="form-check left-checkbox">
+                            <input class="form-check-input" name="day" type="checkbox" value="Friday"
+                                id="defaultCheck7">
+                            <label class="form-check-label" for="defaultCheck7">
+                                Friday
+                            </label>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success ml-auto  w-100 text-center" type="submit">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form method="get" class="mt-2" target="_blank">
+        <div class="form-group mb-2">
+            <input type="text" placeholder="Search" name="q" class="form-control"
+                style="display: inline-block !important; width: auto;" required>
+        </div>
+        <button type="submit" formaction="https://www.google.com/search?"
+            class="btn btn-info ">Google</button>
+        <button type="submit" formaction="https://www.youtube.com/results?"
+            class="btn btn-danger ">Youtube</button>
+    </form>
+</div>

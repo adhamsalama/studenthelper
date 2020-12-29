@@ -5,7 +5,7 @@ from helpers import apology, login_required, connectdb, send_email
 from datetime import datetime, timedelta
 
 
-settings = Blueprint('settings', __name__)
+settings = Blueprint('settings', __name__, template_folder='templates')
 
 # Set up database
 db = connectdb()
@@ -17,7 +17,7 @@ def change_password():
     """Change user password"""
 
     if request.method == "GET":
-        return render_template("change_password.html")
+        return render_template("settings/change_password.html")
     else:
         password = request.form.get("password")
         new_password = request.form.get("new_password")
@@ -62,7 +62,7 @@ def change_email():
     """Change user email"""
 
     if request.method == "GET":
-        return render_template("change_email.html")
+        return render_template("settings/change_email.html")
     else:
         email = request.form.get("email")
         new_email = request.form.get("new_email")
@@ -92,7 +92,7 @@ def add_email():
     """Add email to user account"""
 
     if request.method == "GET":
-        return render_template("add_email.html")
+        return render_template("settings/add_email.html")
     else:
         email = request.form.get("email")
         if not email:
@@ -121,7 +121,7 @@ def feedback():
     """Get user feedback"""
 
     if request.method == "GET":
-        return render_template("feedback.html")
+        return render_template("settings/feedback.html")
     else:
         feedback_type = request.form.get("type")
         feedback = request.form.get("feedback")

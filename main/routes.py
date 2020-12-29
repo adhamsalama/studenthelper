@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 
 
-others = Blueprint('others', __name__, template_folder='templates')
+main = Blueprint('main', __name__, template_folder='templates')
 
 # Set up database
 db = connectdb()
@@ -15,14 +15,14 @@ db = connectdb()
 cache = TTLCache(maxsize=10, ttl=86400)
 cache["quote"] = quote_of_the_day()
 
-@others.route("/")
+@main.route("/")
 @login_required
 def index():
     """Display index page"""
-    return render_template("index.html")
+    return render_template("main/index.html")
 
 
-@others.route("/data/<date>")
+@main.route("/data/<date>")
 @login_required
 def data(date):
     """Return today's data as an HTML snippet"""
@@ -45,11 +45,11 @@ def data(date):
     # Getting this week's dues
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id AND deadline <= :w AND deadline >= :d ORDER BY deadline", {"id": session["user_id"], 'w': week, "d": today_date.strftime("%Y-%m-%d")}).fetchall()
     #head =  render_template("head.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, dues=dues, quote=quote)
-    main =  render_template("main.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, dues=dues, quote=quote)
+    main =  render_template("main/main.html", subjects=today_subjects, tomorrow_subjects=tomorrow_subjects, dues=dues, quote=quote)
     return jsonify({"main": main, "periods_count": len(today_subjects), "dues_count": len(dues)})
     #return jsonify({"today_subjects": rowproxy_to_dict(today_subjects), "tomorrow_subjects": rowproxy_to_dict(tomorrow_subjects), "dues": rowproxy_to_dict(dues)})
 
-@others.route("/search", methods=["GET"])
+@main.route("/search", methods=["GET"])
 @login_required
 def search():
     """Search for user input"""
@@ -65,10 +65,10 @@ def search():
         notes = db.execute("SELECT * FROM notes WHERE user_id = :id AND (subject ILIKE :q OR note ILIKE :q)",{"id": session["user_id"], "q": "%" + q + "%"}).fetchall()
     except:
         return apology("something went wrong")
-    return render_template("results.html", results=results, dues=dues, notes=notes, q=q)
+    return render_template("main/results.html", results=results, dues=dues, notes=notes, q=q)
 
 
-@others.route("/profile")
+@main.route("/profile")
 @login_required
 def profile():
     """Display user's profile"""
@@ -90,19 +90,19 @@ def profile():
     for x in days:
         d[x["day"]] = x["count"]
     time = db.execute("SELECT date FROM users WHERE id = :id", {"id": session["user_id"]}).fetchone()[0]
-    return render_template("profile.html", subjects=subjects, lectures=lectures_count, sections=sections_count, labs=labs_count, total=labs_count+lectures_count+sections_count,
+    return render_template("main/profile.html", subjects=subjects, lectures=lectures_count, sections=sections_count, labs=labs_count, total=labs_count+lectures_count+sections_count,
                            days=d, days_off=days_off, date=time)
 
 
 #For Server Worker
-@others.route("/pwabuilder-sw.js")
+@main.route("/pwabuilder-sw.js")
 #@login_required
 def send_js():
     from flask import current_app
     return current_app.send_static_file('pwabuilder-sw.js')
 
 
-@others.route("/type/<module_type>")
+@main.route("/type/<module_type>")
 @login_required
 def s_type(module_type):
     """Display all subjects of this type"""
@@ -122,10 +122,10 @@ def s_type(module_type):
     for s in subjects:
         subjects_day[s["day"]].append(s)
         counter += 1
-    return render_template("module.html", subjects=subjects_day, module_type=module_type, counter=counter)
+    return render_template("main/module.html", subjects=subjects_day, module_type=module_type, counter=counter)
 
 
-@others.route("/place/<place>")
+@main.route("/place/<place>")
 @login_required
 def place(place):
     """Display subjects in this place"""
@@ -150,10 +150,10 @@ def place(place):
     # days = set()
     # for s in q:
     #     days.add(s["day"])
-    return render_template("place.html", place=place, subjects=d, days=days, periods=periods)
+    return render_template("main/place.html", place=place, subjects=d, days=days, periods=periods)
 
 
-@others.route("/days/<day>")
+@main.route("/days/<day>")
 @login_required
 def day(day):
     """Display subjects on a specific day"""
@@ -165,10 +165,10 @@ def day(day):
                           {"id": session["user_id"], "day": day}).fetchall()
     if not subjects:
         return apology("day not found")
-    return render_template("day.html", subjects=subjects, day=day)
+    return render_template("main/day.html", subjects=subjects, day=day)
 
 
-@others.route("/delete/day", methods=["POST"])
+@main.route("/delete/day", methods=["POST"])
 @login_required
 def delete_day():
     """Delete an entire day's subjects"""
@@ -185,9 +185,9 @@ def delete_day():
     return redirect("/")
 
 
-@others.route("/about_me")
+@main.route("/about_me")
 def about_me():
-    return render_template("about_me.html")
+    return render_template("main/about_me.html")
 
 def errorhandler(e):
     """Handle error"""
@@ -198,4 +198,4 @@ def errorhandler(e):
 
 # Listen for errors
 for code in default_exceptions:
-    others.errorhandler(code)(errorhandler)
+    main.errorhandler(code)(errorhandler)

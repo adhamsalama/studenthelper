@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, connectdb, rowproxy_to_dict
 
 
-subjects = Blueprint('subjects', __name__)
+subjects = Blueprint('subjects', __name__, template_folder='templates')
 
 # Set up database
 db = connectdb()
@@ -24,7 +24,7 @@ def schedule():
     for s in q:
         subjects[s["day"]].append(s)
         counter += 1
-    return render_template("schedule.html", subjects=subjects, counter=counter)
+    return render_template("subjects/schedule.html", subjects=subjects, counter=counter)
 
 
 @subjects.route("/subjects/<subject>")
@@ -55,7 +55,7 @@ def subject(subject):
         subjects[s["day"]].append(s)
         counter += 1
     notes = db.execute("SELECT * FROM notes WHERE user_id = :id AND subject ILIKE :s ORDER BY id DESC", {"id": session["user_id"], "s": subject}).fetchall()
-    return render_template("subject.html", info=subjects, subject=subject, counter=counter, lecturer=lecturer, dues=dues, notes=notes)
+    return render_template("subjects/subject.html", info=subjects, subject=subject, counter=counter, lecturer=lecturer, dues=dues, notes=notes)
 
 
 @subjects.route("/delete/all_subjects", methods=["POST"])

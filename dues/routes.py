@@ -4,7 +4,7 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from helpers import apology, login_required, connectdb
 
 
-dues = Blueprint('dues', __name__)
+dues = Blueprint('dues', __name__, template_folder='templates')
 
 # Set up database
 db = connectdb()
@@ -16,7 +16,7 @@ def dues_():
     """Display dues for user"""
 
     dues = db.execute("SELECT * FROM dues WHERE user_id = :id ORDER BY deadline", {"id": session["user_id"]}).fetchall()
-    return render_template("dues.html", dues=dues)
+    return render_template("dues/dues.html", dues=dues)
 
 
 @dues.route("/add/due", methods=["POST"])
