@@ -257,6 +257,17 @@ Student Helper
         document.querySelector("#periods_count").innerText = result["periods_count"];
         document.querySelector("#dues_count").innerText = result["dues_count"];
         document.querySelector('#content').innerHTML = result["main"];
+        // highlight current running period
+        let time = new Date().toTimeString().slice(0, 7); // get local time string 
+        let table = document.querySelector("#today_periods"); // select today periods table
+        if(table != null) {
+            let rows = table.rows; // get the rows
+            for(let i=1; i < rows.length; i++) { // start from 1 because 0 is the table header
+                let times = rows[i].querySelectorAll(".time");
+                if(time >= times[0].innerText && time <= times[1].innerText)
+                    rows[i].className = "table-success";
+            }
+        }
         format_subject_time();
         calculate_time_left();
         get_weather_data();
