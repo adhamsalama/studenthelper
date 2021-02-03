@@ -241,9 +241,14 @@ Student Helper
 <div id="content">
 
 </div>
+{% endblock %}
+{%block script %}
+    <script src="/static/highlight_periods.js"></script>
+    <script src="/static/format_period_time.js"></script>
+    <script src="/static/add_subject.js"></script>
+    <script src="/static/due.js"></script>
+    <script src="/static/weather.js"></script>
 
-<script src="/static/add_subject.js"></script>
-<script src="/static/due.js"></script>
 <script>
     let date = new Date();
     document.querySelector("#date").innerText = date.toDateString();
@@ -257,50 +262,26 @@ Student Helper
         document.querySelector("#periods_count").innerText = result["periods_count"];
         document.querySelector("#dues_count").innerText = result["dues_count"];
         document.querySelector('#content').innerHTML = result["main"];
-        // highlight current running period
-        let time = new Date().toTimeString().slice(0, 7); // get local time string 
-        let table = document.querySelector("#today_periods"); // select today periods table
-        if(table != null) {
-            let rows = table.rows; // get the rows
-            for(let i=1; i < rows.length; i++) { // start from 1 because 0 is the table header
-                let times = rows[i].querySelectorAll(".time");
-                if(time >= times[0].innerText && time <= times[1].innerText)
-                    rows[i].className = "table-success";
-            }
-        }
-        format_subject_time();
-        calculate_time_left();
-        get_weather_data();
     })
-    function get_weather_data() {
-        navigator.geolocation.getCurrentPosition(getLatLon);
-        function getLatLon(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            let request = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=metric&mode=html&appid=aaacf01424b1f47c7dadcd2a1f8eb254";
-            $("#weather").load(request, function () {
-                document.querySelector("#weather").style.display = "inline-block";
-            });
-        }
-    }
+    .then(() => {highlight_periods()})
+    .then(() => {format_period_time()})
+    .then(() => {get_weather_data()});
 
 // Service Worker
     if ("serviceWorker" in navigator) {
-    if (navigator.serviceWorker.controller) {
-        console.log("[PWA Builder] active service worker found, no need to register");
-    } else {
-        // Register the service worker
-        navigator.serviceWorker
-        .register("pwabuilder-sw.js", {
-            scope: "./"
-        })
-        .then(function (reg) {
-            console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
-        });
+        if (navigator.serviceWorker.controller) {
+            console.log("[PWA Builder] active service worker found, no need to register");
+        } else {
+            // Register the service worker
+            navigator.serviceWorker
+            .register("pwabuilder-sw.js", {
+                scope: "./"
+            })
+            .then(function (reg) {
+                console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+            });
+        }
     }
-    }
-
 </script>
-    <script src="/static/subject_time.js"></script>
 
 {% endblock %}
