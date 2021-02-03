@@ -1,7 +1,6 @@
-document.addEventListener("DOMContentLoaded", format_subject_time);
+document.addEventListener("DOMContentLoaded", format_period_time);
 
-function format_subject_time() {
-    console.log("running subject time");
+function format_period_time() {
     let tds = document.querySelectorAll("td");
     for (let i = 0; i < tds.length; i++) {
         tds[i].style.verticalAlign = "middle";

@@ -274,6 +274,8 @@
 {% endfor %}
 {% endif %}
 <script src="/static/due.js"></script>
+<script src="/static/format_period_time.js"></script>
+
 <script>
     let form = document.querySelector("#delete_subject");
     form.onsubmit = function () {
@@ -291,6 +293,5 @@
         return false;
     }
 </script>
-<script src="/static/subject_time.js"></script>
 
 {% endblock %}

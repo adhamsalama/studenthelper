@@ -9,7 +9,7 @@ const assets = [
     '/dues',
     '/notes',
     '/static/styles.css',
-    '/static/subject_time.js',
+    '/static/format_period_time.js',
     '/static/due.js',
     '/static/logo.png',
     '/static/darkly_bootstrap.min.css',
